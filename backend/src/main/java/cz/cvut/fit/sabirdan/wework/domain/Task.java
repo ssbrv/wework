@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "tasks")
 public class Task extends EntityWithIdLong{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -24,7 +24,7 @@ public class Task extends EntityWithIdLong{
     private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToMany
