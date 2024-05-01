@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "roles")
 public class Role extends EntityWithIdLong {
     @Column(nullable = false)
     private String name;
