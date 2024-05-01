@@ -1,7 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
 import jakarta.persistence.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Set;
