@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "projects")
 public class Project extends EntityWithIdLong {
     @Column(nullable = false)
     private String name;
@@ -17,10 +17,10 @@ public class Project extends EntityWithIdLong {
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Membership> memberships = new HashSet<>();
 
     public String getName() {
