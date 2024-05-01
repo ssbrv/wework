@@ -13,7 +13,7 @@ public class Project extends EntityWithIdLong {
     private String name;
     @Column
     private String description;
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
