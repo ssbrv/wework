@@ -31,7 +31,7 @@ public class Membership extends EntityWithIdLong {
     private Project project;
 
     @ManyToMany
-    @JoinTable(name = "roles",
+    @JoinTable(name = "membership_roles",
             joinColumns = @JoinColumn(name = "membership_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
