@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tasks")
 public class Task extends EntityWithIdLong{
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
