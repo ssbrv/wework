@@ -18,15 +18,15 @@ public class Membership extends EntityWithIdLong {
     private LocalDateTime startMembershipDateTime;
     @Column
     private LocalDateTime endMembershipDateTime;
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private MembershipStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private User member;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
