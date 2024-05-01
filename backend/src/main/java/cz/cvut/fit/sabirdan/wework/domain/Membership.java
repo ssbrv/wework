@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "memberships")
 public class Membership extends EntityWithIdLong {
     @Column
     private LocalDateTime sendInvitationDateTime;
@@ -23,8 +23,8 @@ public class Membership extends EntityWithIdLong {
     private MembershipStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id")
+    private User member;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id", nullable = false)
@@ -76,12 +76,12 @@ public class Membership extends EntityWithIdLong {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
+    public User getMember() {
+        return member;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setMember(User member) {
+        this.member = member;
     }
 
     public Project getProject() {
