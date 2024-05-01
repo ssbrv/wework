@@ -21,7 +21,7 @@ public class User extends EntityWithIdLong {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Membership> memberships = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
