@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.web;
+package cz.cvut.fit.sabirdan.wework.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

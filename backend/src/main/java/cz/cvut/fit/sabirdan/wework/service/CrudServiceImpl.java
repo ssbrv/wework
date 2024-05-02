@@ -1,8 +1,8 @@
 package cz.cvut.fit.sabirdan.wework.service;
 
 import cz.cvut.fit.sabirdan.wework.domain.EntityWithIdLong;
-import cz.cvut.fit.sabirdan.wework.exception.ConflictException;
-import cz.cvut.fit.sabirdan.wework.exception.NotFoundException;
+import cz.cvut.fit.sabirdan.wework.utilites.exception.ConflictException;
+import cz.cvut.fit.sabirdan.wework.utilites.exception.NotFoundException;
 
 import java.util.Optional;
 

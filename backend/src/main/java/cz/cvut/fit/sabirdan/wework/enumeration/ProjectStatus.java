@@ -1,6 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.enumeration;
 
 public enum ProjectStatus {
-    ONGOING,
-    CLOSED
+    ENABLED, // default
+    DISABLED, // disabled by system admin
+    CLOSED // closed by member who has authority
 }

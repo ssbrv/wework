@@ -1,26 +1,29 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
+import cz.cvut.fit.sabirdan.wework.domain.role.MemberRole;
 import cz.cvut.fit.sabirdan.wework.enumeration.MembershipStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "memberships")
 public class Membership extends EntityWithIdLong {
     @Column
-    private LocalDateTime sendInvitationDateTime;
+    private LocalDateTime createdAt = LocalDateTime.now();
     @Column
-    private LocalDateTime acceptInvitationDateTime;
+    private LocalDateTime startedAt;
     @Column
-    private LocalDateTime startMembershipDateTime;
-    @Column
-    private LocalDateTime endMembershipDateTime;
+    private LocalDateTime endedAt;
     @Column
     @Enumerated(EnumType.STRING)
-    private MembershipStatus status;
+    private MembershipStatus status = MembershipStatus.PROPOSED;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
@@ -30,73 +33,27 @@ public class Membership extends EntityWithIdLong {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToMany
-    @JoinTable(name = "membership_roles",
-            joinColumns = @JoinColumn(name = "membership_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    // TODO: assign default role
+    @ManyToOne
+    @JoinColumn(name = "member_role_id")
+    private MemberRole memberRole;
 
-    public LocalDateTime getSendInvitationDateTime() {
-        return sendInvitationDateTime;
-    }
-
-    public void setSendInvitationDateTime(LocalDateTime sendInvitationDateTime) {
-        this.sendInvitationDateTime = sendInvitationDateTime;
-    }
-
-    public LocalDateTime getAcceptInvitationDateTime() {
-        return acceptInvitationDateTime;
-    }
-
-    public void setAcceptInvitationDateTime(LocalDateTime acceptInvitationDateTime) {
-        this.acceptInvitationDateTime = acceptInvitationDateTime;
-    }
-
-    public LocalDateTime getStartMembershipDateTime() {
-        return startMembershipDateTime;
-    }
-
-    public void setStartMembershipDateTime(LocalDateTime startMembershipDateTime) {
-        this.startMembershipDateTime = startMembershipDateTime;
-    }
-
-    public LocalDateTime getEndMembershipDateTime() {
-        return endMembershipDateTime;
-    }
-
-    public void setEndMembershipDateTime(LocalDateTime endMembershipDateTime) {
-        this.endMembershipDateTime = endMembershipDateTime;
-    }
-
-    public MembershipStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(MembershipStatus status) {
-        this.status = status;
-    }
-
-    public User getMember() {
-        return member;
-    }
-
-    public void setMember(User member) {
+    // owner
+    public Membership(User member,
+                      Project project) {
+        this.startedAt = LocalDateTime.now();
+        this.status = MembershipStatus.ENABLED;
         this.member = member;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
         this.project = project;
+        // TODO: set owner role
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    // invitation
+    public Membership(User member,
+                      Project project,
+                      MemberRole memberRole) {
+        this.member = member;
+        this.project = project;
+        this.memberRole = memberRole;
     }
 }

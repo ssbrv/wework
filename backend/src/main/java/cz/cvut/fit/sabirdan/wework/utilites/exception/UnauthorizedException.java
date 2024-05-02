@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.exception;
+package cz.cvut.fit.sabirdan.wework.utilites.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

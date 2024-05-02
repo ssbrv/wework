@@ -2,16 +2,22 @@ package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.enumeration.TaskStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task extends EntityWithIdLong{
     @Column
     @Enumerated(EnumType.STRING)
-    private TaskStatus status;
+    private TaskStatus status = TaskStatus.TODO;
 
     @Column(nullable = false)
     private String summary;
@@ -33,51 +39,18 @@ public class Task extends EntityWithIdLong{
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> assignees = new HashSet<>();
 
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
+    public Task(String summary, String description, Project project, User author, Set<User> assignees) {
         this.summary = summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
         this.project = project;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
         this.author = author;
-    }
-
-    public Set<User> getAssignees() {
-        return assignees;
-    }
-
-    public void setAssignees(Set<User> assignees) {
         this.assignees = assignees;
+    }
+
+    public Task(String summary, String description, Project project, User author) {
+        this.summary = summary;
+        this.description = description;
+        this.project = project;
+        this.author = author;
     }
 }

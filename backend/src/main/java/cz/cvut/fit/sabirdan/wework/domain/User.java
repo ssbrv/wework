@@ -1,10 +1,23 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
+import cz.cvut.fit.sabirdan.wework.domain.role.SystemRole;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends EntityWithIdLong {
@@ -20,6 +33,11 @@ public class User extends EntityWithIdLong {
     @Column(nullable = false)
     private String lastName;
 
+    // TODO: assign basic system role
+    @ManyToOne
+    @JoinColumn(name = "system_role_id")
+    private SystemRole systemRole;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Membership> memberships = new HashSet<>();
 
@@ -29,59 +47,22 @@ public class User extends EntityWithIdLong {
     @ManyToMany(mappedBy = "assignees")
     private Set<Task> assignedTasks = new HashSet<>();
 
-    public String getUsername() {
-        return username;
-    }
+    // status of the user
+    @Column(nullable = false)
+    private boolean enabled = true;
 
-    public void setUsername(String username) {
+    @Column(nullable = false)
+    private boolean locked = false;
+
+
+    // default user registration
+    public User(String username,
+                String password,
+                String firstName,
+                String lastName) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Set<Membership> getMemberships() {
-        return memberships;
-    }
-
-    public void setMemberships(Set<Membership> memberships) {
-        this.memberships = memberships;
-    }
-
-    public Set<Task> getAuthoredTasks() {
-        return authoredTasks;
-    }
-
-    public void setAuthoredTasks(Set<Task> authoredTasks) {
-        this.authoredTasks = authoredTasks;
-    }
-
-    public Set<Task> getAssignedTasks() {
-        return assignedTasks;
-    }
-
-    public void setAssignedTasks(Set<Task> assignedTasks) {
-        this.assignedTasks = assignedTasks;
     }
 }
