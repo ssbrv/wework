@@ -35,8 +35,8 @@ public class User extends EntityWithIdLong {
 
     // TODO: assign basic system role
     @ManyToOne
-    @JoinColumn(name = "system_role_id")
-    private SystemRole systemRole;
+    @JoinColumn(name = "role_id")
+    private SystemRole role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Membership> memberships = new HashSet<>();

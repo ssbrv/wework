@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @MappedSuperclass
-public class Role<CLASS_HOLDER> extends EntityWithIdLong {
+public abstract class Role<CLASS_HOLDER> extends EntityWithIdLong {
     @Column(nullable = false)
     private String name;
 

@@ -13,5 +13,4 @@ import lombok.Setter;
 @Entity
 @Table(name = "member_roles")
 public class MemberRole extends Role<Membership> {
-
 }

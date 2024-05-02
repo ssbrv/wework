@@ -35,8 +35,8 @@ public class Membership extends EntityWithIdLong {
 
     // TODO: assign default role
     @ManyToOne
-    @JoinColumn(name = "member_role_id")
-    private MemberRole memberRole;
+    @JoinColumn(name = "role_id")
+    private MemberRole role;
 
     // owner
     public Membership(User member,
@@ -51,9 +51,9 @@ public class Membership extends EntityWithIdLong {
     // invitation
     public Membership(User member,
                       Project project,
-                      MemberRole memberRole) {
+                      MemberRole role) {
         this.member = member;
         this.project = project;
-        this.memberRole = memberRole;
+        this.role = role;
     }
 }
