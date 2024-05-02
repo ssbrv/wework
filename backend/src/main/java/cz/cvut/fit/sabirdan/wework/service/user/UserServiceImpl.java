@@ -26,4 +26,9 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
     public String getEntityName() {
         return "User";
     }
+
+    @Override
+    public Iterable<User> getUsers() {
+        return userRepository.findAll();
+    }
 }
