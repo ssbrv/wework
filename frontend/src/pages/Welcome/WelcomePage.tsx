@@ -1,3 +1,5 @@
-export const WelcomePage = (): JSX.Element => {
-  return <div></div>;
+const WelcomePage = (): JSX.Element => {
+  return <div className=""></div>;
 };
+
+export default WelcomePage;

@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
 } from "react";
+import api from "./api/api";
 
 interface AuthContextProps {
   token: string | null;
@@ -13,7 +14,7 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [token, setToken_] = useState<string | null>(
@@ -26,10 +27,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (token) {
-      // TODO: handle token api
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       localStorage.setItem("token", token);
     } else {
-      // TODO: handle token api
+      api.defaults.headers.common.Authorization = undefined;
       localStorage.removeItem("token");
     }
   }, [token]);
@@ -46,3 +47,5 @@ export const useAuth = (): AuthContextProps => {
   if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
+
+export default AuthProvider;

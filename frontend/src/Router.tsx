@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./AuthProvider";
-import { WelcomePage } from "./pages/Welcome/WelcomePage";
+import AuthProvider from "./AuthProvider";
+import WelcomePage from "./pages/Welcome/WelcomePage";
 
 export const Router = (): JSX.Element => {
   return (
