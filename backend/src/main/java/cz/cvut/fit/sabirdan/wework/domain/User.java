@@ -1,30 +1,28 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.domain.role.SystemRole;
+import cz.cvut.fit.sabirdan.wework.enumeration.Authorization;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User extends EntityWithIdLong {
+public class User extends EntityWithIdLong implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -54,7 +52,6 @@ public class User extends EntityWithIdLong {
     @Column(nullable = false)
     private boolean locked = false;
 
-
     // default user registration
     public User(String username,
                 String password,
@@ -64,5 +61,33 @@ public class User extends EntityWithIdLong {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        if (role == null)
+            return authorities;
+
+        for (Authorization authorization : role.getAuthorizations())
+            authorities.add(new SimpleGrantedAuthority(authorization.name()));
+
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }
