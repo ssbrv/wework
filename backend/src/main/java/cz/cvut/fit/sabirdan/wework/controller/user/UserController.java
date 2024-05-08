@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.controller;
+package cz.cvut.fit.sabirdan.wework.controller.user;
 
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
@@ -18,11 +18,5 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping
-    public Iterable<User> getUsers()
-    {
-        return userService.getUsers();
     }
 }

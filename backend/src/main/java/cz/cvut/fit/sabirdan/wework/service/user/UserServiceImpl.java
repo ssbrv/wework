@@ -3,19 +3,19 @@ package cz.cvut.fit.sabirdan.wework.service.user;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.repository.UserRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import cz.cvut.fit.sabirdan.wework.utilites.exception.ConflictException;
+import cz.cvut.fit.sabirdan.wework.utilites.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl extends CrudServiceImpl<User> implements UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public JpaRepository<User, Long> getRepository() {
@@ -28,7 +28,17 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
     }
 
     @Override
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
+    public User findByUsername(String username) throws NotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new NotFoundException(getEntityName() + " does not exist with username \"" + username + "\"")
+        );
+    }
+
+    @Override
+    public User save(User user) {
+        if (userRepository.existsByUsername(user.getUsername()))
+            throw new ConflictException(getEntityName() + " already exists with username \"" + user.getUsername() + "\"");
+
+        return super.save(user);
     }
 }
