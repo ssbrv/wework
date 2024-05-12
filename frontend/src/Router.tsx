@@ -6,6 +6,7 @@ import WelcomePage from "./pages/Welocome/WelcomePage";
 import LoginGuard from "./LoginGuard";
 import AuthGuard from "./AuthGuard";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
+import ProfilePage from "./pages/Profile/Profile";
 
 export const Router = (): JSX.Element => {
   return (
@@ -18,7 +19,7 @@ export const Router = (): JSX.Element => {
             <Route path="/register" element={<RegisterPage />} />
           </Route>
           <Route element={<AuthGuard />}>
-            <Route path="/profile" />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

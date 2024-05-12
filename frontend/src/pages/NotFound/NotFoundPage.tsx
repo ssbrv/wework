@@ -1,10 +1,10 @@
 import { Button, Title } from "@mantine/core";
 import { MoodSad } from "tabler-icons-react";
-import PreAuth from "../../components/PreAuth/PreAuth";
+import LgCardWithLogoOnGradientBackground from "../../components/LgCardWithLogoOnGradientBackground/LgCardWithLogoOnGradientBackground";
 
 const NotFoundPage = (): JSX.Element => {
   return (
-    <PreAuth>
+    <LgCardWithLogoOnGradientBackground>
       <div className="flex items-center w-full gap-4">
         <MoodSad className="size-12 text-danger" />
         <Title order={2}>The page was not found...</Title>
@@ -15,7 +15,7 @@ const NotFoundPage = (): JSX.Element => {
       <Button radius="md" size="md" component="a" href="profile">
         Go to my profile
       </Button>
-    </PreAuth>
+    </LgCardWithLogoOnGradientBackground>
   );
 };
 

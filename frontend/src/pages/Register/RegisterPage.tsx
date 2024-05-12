@@ -1,5 +1,5 @@
 import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
-import PreAuth from "../../components/PreAuth/PreAuth";
+import LgCardWithLogoOnGradientBackground from "../../components/LgCardWithLogoOnGradientBackground/LgCardWithLogoOnGradientBackground";
 import { useAuth } from "../../AuthProvider";
 import AuthService from "../../api/service/AuthService";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const RegisterPage = (): JSX.Element => {
   });
 
   return (
-    <PreAuth>
+    <LgCardWithLogoOnGradientBackground>
       <TextInput
         {...register("firstName")}
         variant="filled"
@@ -84,7 +84,7 @@ const RegisterPage = (): JSX.Element => {
           Log in
         </a>
       </div>
-    </PreAuth>
+    </LgCardWithLogoOnGradientBackground>
   );
 };
 
