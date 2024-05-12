@@ -18,11 +18,8 @@ const LoginPage = (): JSX.Element => {
     formState: { errors },
   } = useForm<AuthRequest>();
 
-  const login = handleSubmit(async (data: AuthRequest) => {
-    await AuthService.auth(
-      { username: data.username, password: data.password },
-      setToken
-    )
+  const loginUser = handleSubmit(async (data: AuthRequest) => {
+    await AuthService.auth(data, setToken)
       .then(function () {
         navigate("/profile");
       })
@@ -49,7 +46,7 @@ const LoginPage = (): JSX.Element => {
         placeholder="Password"
         error={errors.password?.message}
       />
-      <Button radius="md" size="md" type="submit" onClick={login}>
+      <Button radius="md" size="md" type="submit" onClick={loginUser}>
         Log in
       </Button>
       <div className="flex justify-between">
