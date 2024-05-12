@@ -3,8 +3,8 @@ package cz.cvut.fit.sabirdan.wework.service.user;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.repository.UserRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.ConflictException;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.NotFoundException;
+import cz.cvut.fit.sabirdan.wework.http.exception.ConflictException;
+import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -30,14 +30,14 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
     @Override
     public User findByUsername(String username) throws NotFoundException {
         return userRepository.findByUsername(username).orElseThrow(
-                () -> new NotFoundException(getEntityName() + " does not exist with username \"" + username + "\"")
+                () -> new NotFoundException("username", getEntityName() + " does not exist with username \"" + username + "\"")
         );
     }
 
     @Override
     public User save(User user) {
         if (userRepository.existsByUsername(user.getUsername()))
-            throw new ConflictException(getEntityName() + " already exists with username \"" + user.getUsername() + "\"");
+            throw new ConflictException("username", getEntityName() + " already exists with username \"" + user.getUsername() + "\"");
 
         return super.save(user);
     }

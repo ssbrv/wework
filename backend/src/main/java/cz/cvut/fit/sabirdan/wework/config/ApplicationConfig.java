@@ -1,7 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.config;
 
 import cz.cvut.fit.sabirdan.wework.repository.UserRepository;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.NotFoundException;
+import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class ApplicationConfig {
     UserDetailsService userDetailsService() {
         return username -> userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("User details not found with username " + username));
+                .orElseThrow(() -> new NotFoundException("username", "User dos not exist with username " + username));
     }
 
     @Bean

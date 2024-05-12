@@ -1,10 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.service;
 
 import cz.cvut.fit.sabirdan.wework.domain.EntityWithIdLong;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.BadRequestException;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.ConflictException;
-import cz.cvut.fit.sabirdan.wework.utilites.exception.NotFoundException;
-import io.micrometer.common.util.StringUtils;
+import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 
 import java.util.Optional;
 
