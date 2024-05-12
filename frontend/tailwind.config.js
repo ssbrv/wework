@@ -13,7 +13,7 @@ module.exports = {
       tretiary: "white",
 
       action: "blue",
-      danger: "red",
+      danger: "#ff6666",
       attract: "green",
       neutral: "white",
 
