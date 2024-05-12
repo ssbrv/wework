@@ -2,6 +2,7 @@ package cz.cvut.fit.sabirdan.wework.controller.user;
 
 import cz.cvut.fit.sabirdan.wework.http.request.AuthenticationRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.RegisterRequest;
+import cz.cvut.fit.sabirdan.wework.http.response.AttributeErrorResponse;
 import cz.cvut.fit.sabirdan.wework.http.response.AuthenticationResponse;
 import cz.cvut.fit.sabirdan.wework.service.user.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -30,6 +32,12 @@ public class AuthenticationController {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Invalid password")
-    public void authenticationExceptionToInvalidPassword(AuthenticationException ignore) {}
+    public ResponseEntity<AttributeErrorResponse> authenticationExceptionToInvalidPassword(AuthenticationException ignore) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new AttributeErrorResponse(
+                        "password",
+                        "Invalid password"
+                ));
+    }
 }
