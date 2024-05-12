@@ -7,8 +7,6 @@ const ExceptionHandler = {
     setError: UseFormSetError<T>,
     error: any
   ) => {
-    console.error("Error: ", error);
-
     // no response and no request
     if (!error.response && !error.request) {
       badNotification(
