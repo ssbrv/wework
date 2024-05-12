@@ -24,11 +24,13 @@ public class RegisterRequest {
 
     @NotBlank(message = "First Name cannot be blank")
     @Size(max = 20, message = "First Name has to be maximum 20 characters long")
-    @Pattern(regexp = "^\\S.*\\S$", message = "First Name must not start or end with white spaces")
+    @Pattern(regexp = "^\\S.*", message = "First Name must not start with a white space")
+    @Pattern(regexp = ".*\\S$", message = "First Name must not end with a white space")
     private String firstName;
 
     @NotBlank(message = "Last Name cannot be blank")
     @Size(max = 20, message = "Last Name has to be maximum 20 characters long")
-    @Pattern(regexp = "^\\S.*\\S$", message = "Last Name must not start or end with white spaces")
+    @Pattern(regexp = "^\\S.*", message = "Last Name must not start with a white space")
+    @Pattern(regexp = ".*\\S$", message = "Last Name must not end with a white space")
     private String lastName;
 }
