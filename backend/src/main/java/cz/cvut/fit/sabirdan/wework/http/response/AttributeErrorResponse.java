@@ -17,19 +17,19 @@ public class AttributeErrorResponse {
 
     public AttributeErrorResponse(String attribute, String message) {
         errors = new ArrayList<>();
-        setAttributeError(attribute, message);
+        addAttributeError(attribute, message);
     }
 
     public AttributeErrorResponse(AttributeError attributeError) {
         errors = new ArrayList<>();
-        setAttributeError(attributeError);
+        addAttributeError(attributeError);
     }
 
-    public void setAttributeError(String attribute, String message) {
+    public void addAttributeError(String attribute, String message) {
         errors.add(new AttributeError(attribute, message));
     }
 
-    public void setAttributeError(AttributeError attributeError) {
+    public void addAttributeError(AttributeError attributeError) {
         errors.add(attributeError);
     }
 }
