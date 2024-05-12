@@ -15,12 +15,8 @@ const AuthService = {
     registerRequest: RegisterRequest,
     setToken: (newToken: string | null) => void
   ) => {
-    try {
-      const authResponse = await api.post("auth/register", registerRequest);
-      setToken(authResponse.data.jwtToken);
-    } catch (error) {
-      console.error("Login error: ", error);
-    }
+    const authResponse = await api.post("auth/register", registerRequest);
+    setToken(authResponse.data.jwtToken);
   },
 };
 
