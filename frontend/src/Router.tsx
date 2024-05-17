@@ -8,7 +8,7 @@ import AuthGuard from "./AuthGuard";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import ProfilePage from "./pages/Profile/Profile";
 import NavigationBarLayout from "./components/NavigationBar/NavigationBarLayout";
-import ExceptionProvider from "./hooks/ExceptionHandler";
+import ExceptionProvider from "./hooks/ExceptionProvider";
 import UserProvider from "./hooks/UserProvider";
 import ProjectList from "./pages/ProjectList/ProjectList";
 

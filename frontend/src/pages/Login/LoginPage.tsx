@@ -3,13 +3,13 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { AuthRequest } from "../../http/request/AuthRequest";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
 
 const LoginPage = (): JSX.Element => {
   const { login } = useAuth();
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
   const navigate = useNavigate();
 
   const {

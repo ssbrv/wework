@@ -8,7 +8,7 @@ import {
 import { useUser } from "../../hooks/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
 import ChangePasswordForm from "./ChangePasswordForm";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
 import { EditUsernameRequest } from "../../http/request/EditUsernameRequest";
 import { useEffect } from "react";
@@ -27,7 +27,7 @@ const Credentials = (): JSX.Element => {
 
   const { user, editUsername } = useUser();
 
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
 
   const {
     register: key,

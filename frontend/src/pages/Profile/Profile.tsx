@@ -1,7 +1,7 @@
 import { Header } from "../../components/Header/Header";
 import { Button, Group, Modal } from "@mantine/core";
 import { ButtonBar } from "../../components/ButtonBar/ButtonBar";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { useAuth } from "../../hooks/AuthProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import BasicInformation from "./BasicInformation";
@@ -9,7 +9,7 @@ import Credentials from "./Credentials";
 import { useDisclosure } from "@mantine/hooks";
 
 const ProfilePage = (): JSX.Element => {
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
   const { fullLogout } = useAuth();
 
   const [fullLogoutOpened, { open: openFullLogout, close: closeFullLogout }] =

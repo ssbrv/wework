@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useMemo } from "react";
 import useSWR from "swr";
 import { User } from "../http/response/User";
 import { getFetcher } from "../api/fetchers";
-import { useExceptionHandler } from "./ExceptionHandler";
+import { useException } from "./ExceptionProvider";
 import api from "../api/api";
 import { EditBasicRequest } from "../http/request/EditBasicRequest";
 import { Outlet } from "react-router-dom";
@@ -17,7 +17,7 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 const UserProvider = (): JSX.Element => {
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
 
   console.log("get/me");
   const { data: user, error, mutate } = useSWR<User>("user/me", getFetcher);

@@ -1,7 +1,7 @@
 import { Button, LoadingOverlay, NativeSelect, TextInput } from "@mantine/core";
 import { useUser } from "../../hooks/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
 import { EditBasicRequest } from "../../http/request/EditBasicRequest";
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ const BasicInformation = (): JSX.Element => {
   const [editPressed, { open: pressEdit, close: unpressEdit }] =
     useDisclosure(false);
 
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
 
   const {
     register: key,

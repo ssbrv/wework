@@ -1,6 +1,6 @@
 import { Button, Group, PasswordInput } from "@mantine/core";
 import { useAuth } from "../../hooks/AuthProvider";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { ChangePasswordRequest } from "../../http/request/ChangePasswordRequest";
 import { useForm } from "react-hook-form";
 import { goodNotification } from "../../components/Notifications/Notifications";
@@ -11,7 +11,7 @@ interface Props {
 
 const ChangePasswordForm = ({ onClose }: Props): JSX.Element => {
   const { changePassword } = useAuth();
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
 
   const {
     register: key,

@@ -93,12 +93,10 @@ const ExceptionProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useExceptionHandler = (): ExceptionContextProps => {
+export const useException = (): ExceptionContextProps => {
   const context = useContext(ExceptionContext);
   if (!context)
-    throw new Error(
-      "useExceptionHandler must be used within ExceptionProvider"
-    );
+    throw new Error("useException must be used within ExceptionProvider");
   return context;
 };
 

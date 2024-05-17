@@ -3,13 +3,13 @@ import { useAuth } from "../../hooks/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { RegisterRequest } from "../../http/request/RegisterRequest";
-import { useExceptionHandler } from "../../hooks/ExceptionHandler";
+import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
 
 const RegisterPage = (): JSX.Element => {
   const { register } = useAuth();
-  const { handleException } = useExceptionHandler();
+  const { handleException } = useException();
   const navigate = useNavigate();
 
   const {
