@@ -1,4 +1,4 @@
-import { notifications } from '@mantine/notifications';
+import { notifications } from "@mantine/notifications";
 
 // autoclose, green background
 export const goodNotification = (
@@ -6,12 +6,12 @@ export const goodNotification = (
   notificationMessage?: string
 ) => {
   notifications.show({
-    color: 'green',
+    color: "green",
     title: notificationTitle,
     message: notificationMessage,
-    radius: 'md',
+    radius: "md",
     autoClose: 4000,
-    style: { backgroundColor: '#d9ffde' },
+    style: { backgroundColor: "#d9ffde" },
   });
 };
 
@@ -23,7 +23,7 @@ export const okNotification = (
   notifications.show({
     title: notificationTitle,
     message: notificationMessage,
-    radius: 'md',
+    radius: "md",
     autoClose: 4000,
   });
 };
@@ -34,11 +34,11 @@ export const badNotification = (
   notificationMessage?: string
 ) => {
   notifications.show({
-    color: 'red',
+    color: "red",
     title: notificationTitle,
     message: notificationMessage,
-    radius: 'md',
-    style: { backgroundColor: '#fff1f0' },
-    autoClose: false,
+    radius: "md",
+    style: { backgroundColor: "#fff1f0" },
+    autoClose: 10000,
   });
 };

@@ -1,6 +1,8 @@
 package cz.cvut.fit.sabirdan.wework.controller.user;
 
 import cz.cvut.fit.sabirdan.wework.http.request.AuthenticationRequest;
+import cz.cvut.fit.sabirdan.wework.http.request.ChangePasswordRequest;
+import cz.cvut.fit.sabirdan.wework.http.request.LogoutRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.RegisterRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.AttributeErrorResponse;
 import cz.cvut.fit.sabirdan.wework.http.response.AuthenticationResponse;
@@ -29,6 +31,21 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @Validated AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+    }
+
+    @PostMapping("/logout")
+    public void logout(@RequestBody LogoutRequest logoutRequest) {
+        authenticationService.logout(logoutRequest);
+    }
+
+    @PostMapping("/full-logout")
+    public ResponseEntity<AuthenticationResponse> fullLogout() {
+        return ResponseEntity.ok(authenticationService.fullLogout());
+    }
+
+    @PutMapping("password")
+    public ResponseEntity<AuthenticationResponse> changePassword(@RequestBody @Validated ChangePasswordRequest changePasswordRequest) {
+        return ResponseEntity.ok(authenticationService.changePassword(changePasswordRequest));
     }
 
     @ExceptionHandler(AuthenticationException.class)

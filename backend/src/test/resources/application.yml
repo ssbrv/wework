@@ -1,0 +1,24 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+#  ssl:
+#    key-store: keystore.p12
+#    key-store-password: ...
+#    key-store-type: PKCS12
+#    key-alias: tomcat
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: 8263003b6b5e27ca610417e781daad0da03badc797c67af86e9b0565d6620b58
+      expiration: 86400000 # 1 day

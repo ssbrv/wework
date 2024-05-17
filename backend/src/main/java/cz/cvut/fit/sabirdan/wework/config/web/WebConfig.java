@@ -1,6 +1,10 @@
 package cz.cvut.fit.sabirdan.wework.config.web;
 
+import cz.cvut.fit.sabirdan.wework.enumeration.converter.StirngToSexConverter;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -28,5 +32,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
+    }
+
+    @Override
+    public void addFormatters(@NonNull FormatterRegistry registry) {
+        ApplicationConversionService.configure(registry);
+        registry.addConverter(new StirngToSexConverter());
     }
 }

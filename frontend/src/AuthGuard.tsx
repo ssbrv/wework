@@ -1,5 +1,5 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "./hooks/AuthProvider";
 import { okNotification } from "./components/Notifications/Notifications";
 
 const AuthGuard = (): JSX.Element => {

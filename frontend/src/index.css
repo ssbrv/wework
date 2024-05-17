@@ -26,15 +26,31 @@ code {
 }
 
 @layer components {
-  .card-sm {
-    @apply border shadow-sm rounded-md;
+  .fnt-sm {
+    @apply text-sm leading-sm;
   }
 
-  .card-md {
-    @apply border shadow-md rounded-md;
+  .fnt-md {
+    @apply text-md leading-md;
   }
 
-  .card-lg {
-    @apply shadow-lg rounded-md;
+  .fnt-lg {
+    @apply text-lg leading-lg;
+  }
+
+  .card {
+    @apply shadow rounded bg-primary;
+  }
+
+  .btn-action {
+    @apply bg-action hover:bg-action hover:grayscale-[25%];
+  }
+
+  .btn-danger {
+    @apply bg-danger hover:bg-danger hover:grayscale-[25%];
+  }
+
+  .btn-attract {
+    @apply bg-attract hover:bg-attract hover:grayscale-[25%];
   }
 }

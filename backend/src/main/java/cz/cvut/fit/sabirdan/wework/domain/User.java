@@ -2,14 +2,14 @@ package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.domain.role.SystemRole;
 import cz.cvut.fit.sabirdan.wework.enumeration.Authorization;
-import io.micrometer.common.util.StringUtils;
+import cz.cvut.fit.sabirdan.wework.enumeration.Sex;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -30,6 +30,12 @@ public class User extends EntityWithIdLong implements UserDetails {
 
     @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false)
+    private Sex sex = Sex.UNSPECIFIED;
+
+    @Column(nullable = false)
+    private LocalDateTime lastFullLogoutDate = LocalDateTime.now().minusSeconds(1);
 
     // TODO: assign basic system role
     @ManyToOne
@@ -89,5 +95,9 @@ public class User extends EntityWithIdLong implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    public void setLastFullLogoutDate(LocalDateTime lastFullLogoutDate) {
+        this.lastFullLogoutDate = lastFullLogoutDate.minusSeconds(1);
     }
 }
