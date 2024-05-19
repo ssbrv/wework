@@ -32,7 +32,7 @@ export const WeWorkLogo = ({
     >
       {withImage && (
         <Image
-          src="wework.png"
+          src="/wework.png"
           className={`flex-shrink-0 ${sizeMapper[logoSize]}`}
         />
       )}

@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
-
     private final UserService userService;
 
     @Autowired
@@ -28,5 +29,10 @@ public class UserController {
     @PutMapping("{id}")
     private void updateUser(@PathVariable Long id, @RequestBody @Validated UpdateUserRequest updateUserRequest) {
         userService.updateUserById(id, updateUserRequest);
+    }
+
+    @GetMapping
+    private ResponseEntity<Iterable<SafeUserDTO>> getUsers() {
+        return ResponseEntity.ok(userService.findAll().stream().map(SafeUserDTO::new).collect(Collectors.toList()));
     }
 }

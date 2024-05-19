@@ -14,6 +14,8 @@ module.exports = {
       action_light: "#9AD6FE",
       danger_light: "#F7B6BE",
       attract_light: "#BFEDD6",
+
+      hover: "#e4f3fa",
     },
     boxShadow: {
       DEFAULT: "rgba(149, 157, 165, 0.2) 0px 8px 24px",

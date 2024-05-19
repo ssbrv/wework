@@ -17,7 +17,7 @@ import java.util.Set;
 public class Project extends EntityWithIdLong {
     @Column(nullable = false)
     private String name;
-    @Column
+    @Column(length = 1500)
     private String description;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

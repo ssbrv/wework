@@ -16,13 +16,26 @@ public class ProjectDTO {
     private String name;
     private String description;
     private ProjectStatus status;
+    private Integer memberCount;
+
 
     public ProjectDTO(Project project) {
         this(
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
-                project.getStatus()
+                project.getStatus(),
+                null
+        );
+    }
+
+    public ProjectDTO(Project project, Integer memberCount) {
+        this(
+                project.getId(),
+                project.getName(),
+                project.getDescription(),
+                project.getStatus(),
+                memberCount
         );
     }
 }

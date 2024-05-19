@@ -29,12 +29,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/api/v1/user/**").authenticated()
-                                .requestMatchers("/api/v1/membership/**").authenticated()
-                                .requestMatchers("/api/v1/task/**").authenticated()
-                                .requestMatchers("/api/v1/project/**").authenticated()
-                                .requestMatchers("/api/v1/system-role/**").authenticated()
-                                .requestMatchers("/api/v1/member-role/**").authenticated()
+                                .requestMatchers("/api/v1/users/**").authenticated()
+                                .requestMatchers("/api/v1/memberships/**").authenticated()
+                                .requestMatchers("/api/v1/tasks/**").authenticated()
+                                .requestMatchers("/api/v1/projects/**").authenticated()
+                                .requestMatchers("/api/v1/system-roles/**").authenticated()
+                                .requestMatchers("/api/v1/member-roles/**").authenticated()
                                 .requestMatchers("/api/v1/auth/logout").authenticated()
                                 .requestMatchers("/api/v1/auth/full-logout").authenticated()
                                 .requestMatchers("/api/v1/auth/password").authenticated()

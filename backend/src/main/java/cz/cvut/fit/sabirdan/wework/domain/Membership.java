@@ -40,17 +40,18 @@ public class Membership extends EntityWithIdLong {
 
     // TODO: assign default role
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     private MemberRole role;
 
     // owner
     public Membership(User member,
-                      Project project) {
+                      Project project,
+                      MemberRole role) {
         this.startedAt = LocalDateTime.now();
         this.status = MembershipStatus.ENABLED;
         this.member = member;
         this.project = project;
-        // TODO: set owner role
+        this.role = role;
     }
 
     // invitation

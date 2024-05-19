@@ -31,3 +31,10 @@ application:
       name: superadmin
     user:
       name: user
+  member-role:
+    owner:
+      name: owner
+    admin:
+      name: admin
+    member:
+      name: member

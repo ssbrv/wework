@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateProjectRequest {
+public class CreateUpdateProjectRequest {
     @NotBlank(message = "Project name cannot be blank")
     @Size(max = 60, message = "Project name has to be maximum 60 characters long")
     private String name;

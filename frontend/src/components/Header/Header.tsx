@@ -5,8 +5,9 @@ interface Props {
 
 export const Header = (props: Props): JSX.Element => {
   return (
-    <div className="card p-m">
+    <div className="card p-m flex justify-between gap-m">
       <div className="fnt-lg font-bold">{props.name}</div>
+      <div className="flex gap-m items-center">{props.controls}</div>
     </div>
   );
 };

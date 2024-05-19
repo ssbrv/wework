@@ -56,8 +56,8 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         if (project.getStatus() != ProjectStatus.ENABLED)
             throw new BadRequestException("You cannot invite people to a closed project");
 
-        MemberRole role = memberRoleService.findById(inviteRequest.getRoleId())
-                .orElseThrow(() -> new NotFoundException("role", "Role does not exist. Please, contact tech support"));
+        MemberRole role = memberRoleService.findByName(inviteRequest.getRoleName())
+                .orElseThrow(() -> new NotFoundException("roleName", "Role does not exist. Please, contact tech support"));
 
         User user = userService.getByUsername(inviteRequest.getUsername());
 
@@ -76,11 +76,14 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 inviter.getUsername()
         ).orElseThrow(() -> new UnauthorizedException("You are not a part of this project"));
 
+        if (user.getUsername().equals(inviter.getUsername()))
+            throw new BadRequestException("username", "You selected yourself, but you are already in this project. Why would you invite yourself?");
+
         if (!inviterMembership.isAuthorized(Authorization.INVITE))
             throw new UnauthorizedException("You are not authorized to invite other people to this project");
 
         if (!inviterMembership.hasAuthorityOver(membership))
-            throw new UnauthorizedException("role", "You are not authorized to select this role");
+            throw new UnauthorizedException("roleName", "You are not authorized to select this role");
 
         return new InviteResponse(saveOrSubstituteMembership(membership).getId());
     }

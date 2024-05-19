@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -53,8 +52,8 @@ public class SystemRoleServiceImpl extends CrudServiceImpl<SystemRole> implement
     @Override
     public void initializeSystemRoles() {
         List<SystemRole> initList = new ArrayList<>();
-        SystemRole superAdminSystemRole = new SystemRole(superAdminSystemRoleName, Authorization.getAllAuthorizations(), 90);
-        SystemRole userSystemRole = new SystemRole(userSystemRoleName, Authorization.getUserAuthorizations(), 10);
+        SystemRole superAdminSystemRole = new SystemRole(superAdminSystemRoleName, Authorization.getAllSystemAuthorizations(), 90);
+        SystemRole userSystemRole = new SystemRole(userSystemRoleName, Authorization.getUserSystemRoleAuthorizations(), 10);
 
         if (!systemRoleRepository.existsByName(superAdminSystemRoleName))
             initList.add(superAdminSystemRole);

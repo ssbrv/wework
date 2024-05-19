@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SafeUserDTO {
-    private String id;
+    private Long id;
     private String username;
     private String firstName;
     private String lastName;
@@ -22,7 +22,7 @@ public class SafeUserDTO {
 
     public SafeUserDTO(User user) {
         this(
-                String.valueOf(user.getId()),
+                user.getId(),
                 user.getUsername(),
                 user.getFirstName(),
                 user.getLastName(),

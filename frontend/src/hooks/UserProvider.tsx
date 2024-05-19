@@ -26,7 +26,6 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 const UserProvider = (): JSX.Element => {
   const { myId } = useAuth();
-
   const { userId } = useParams<{ userId: string }>();
   const [isItMe, setIsItMe] = useState<boolean>(userId === myId);
   const { handleException } = useException();
@@ -42,7 +41,7 @@ const UserProvider = (): JSX.Element => {
   } = useSWR<User>(`users/${userId}`, getFetcher);
 
   if (error) {
-    console.log("The exception was caught while fetching data from get/me");
+    console.log("The exception was caught while fetching data from users/id");
     handleException(error, undefined, true);
   }
 
@@ -64,7 +63,7 @@ const UserProvider = (): JSX.Element => {
 
   const contextValue = useMemo(
     () => ({ user, editBasic, editUsername, isItMe }),
-    [editBasic, editUsername, user]
+    [editBasic, editUsername, isItMe, user]
   );
   return (
     <UserContext.Provider value={contextValue}>

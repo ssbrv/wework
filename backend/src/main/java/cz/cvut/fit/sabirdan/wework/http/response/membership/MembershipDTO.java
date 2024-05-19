@@ -35,7 +35,7 @@ public class MembershipDTO {
                 membership.getEndedAt(),
                 membership.getStatus(),
                 new SafeUserDTO(membership.getMember()),
-                new SafeUserDTO(membership.getInviter()),
+                (membership.getInviter() != null) ? new SafeUserDTO(membership.getInviter()) : null,
                 new ProjectDTO(membership.getProject()),
                 new RoleDTO(membership.getRole())
         );

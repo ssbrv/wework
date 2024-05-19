@@ -2,7 +2,7 @@ import { Sex } from "./enumerations/Enumerations";
 import { Role } from "./Role";
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
   firstName: string;
   lastName: string;
