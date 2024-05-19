@@ -1,18 +1,17 @@
 package cz.cvut.fit.sabirdan.wework.service.user;
 
 import cz.cvut.fit.sabirdan.wework.domain.User;
-import cz.cvut.fit.sabirdan.wework.http.request.EditBasicRequest;
-import cz.cvut.fit.sabirdan.wework.http.request.EditUsernameRequest;
-import cz.cvut.fit.sabirdan.wework.http.response.GetMeRespond;
+import cz.cvut.fit.sabirdan.wework.http.request.UpdateUserRequest;
 import cz.cvut.fit.sabirdan.wework.service.CrudService;
-import org.springframework.security.core.Authentication;
 
 public interface UserService extends CrudService<User> {
-    User findByUsername(String username);
+    User getByUsername(String username);
 
-    GetMeRespond getMe();
+    User getById(Long id);
 
-    void editBasic(EditBasicRequest editBasicRequest);
+    void updateUserByUsername(String username, UpdateUserRequest updateUserRequest);
 
-    void editUsername(EditUsernameRequest editUsernameRequest);
+    void updateUserById(Long id, UpdateUserRequest updateUserRequest);
+
+    void updateUser(User user, UpdateUserRequest updateUserRequest);
 }

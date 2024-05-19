@@ -1,7 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.domain.role;
 
 import cz.cvut.fit.sabirdan.wework.domain.EntityWithIdLong;
-import cz.cvut.fit.sabirdan.wework.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,29 +15,33 @@ import java.util.Set;
 @NoArgsConstructor
 @MappedSuperclass
 public abstract class Role<CLASS_HOLDER> extends EntityWithIdLong {
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    protected String name;
 
     @Column(nullable = false)
-    private int power;
+    protected int power;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column
     @Enumerated(EnumType.STRING)
-    private Set<Authorization> authorizations = new HashSet<>();
+    protected Set<Authorization> authorizations = new HashSet<>();
 
     @Column
-    private String description;
+    protected String description;
 
-    @OneToMany(mappedBy = "role")
-    private Set<CLASS_HOLDER> roleHolders = new HashSet<>();
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    protected Set<CLASS_HOLDER> roleHolders = new HashSet<>();
 
     // default role creation
-    public Role(String name, Set<Authorization> authorizations, String description) {
+    public Role(String name, Set<Authorization> authorizations, int power) {
         this.name = name;
         this.authorizations = authorizations;
-        this.description = description;
+        this.power = power;
     }
 
-    boolean authorized(Authorization authorization) { return authorizations.contains(authorization); }
+    public boolean isAuthorized(Authorization authorization) { return authorizations.contains(authorization); }
+
+    public boolean hasAuthorityOver(Role<?> role) {
+        return role == null || power > role.power;
+    }
 }

@@ -20,17 +20,17 @@ export const Router = (): JSX.Element => {
           <Routes>
             <Route element={<LoginGuard />}>
               <Route path="/" element={<WelcomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
             </Route>
             <Route element={<AuthGuard />}>
-              <Route element={<UserProvider />}>
-                <Route element={<NavigationBarLayout />}>
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/tasks" element={<ProfilePage />} />
-                  <Route path="/projects" element={<ProjectList />} />
-                  <Route path="*" element={<NotFoundPage />} />
+              <Route element={<NavigationBarLayout />}>
+                <Route path=":userId" element={<UserProvider />}>
+                  <Route path="profile" element={<ProfilePage />} />
                 </Route>
+                <Route path="tasks" element={<NotFoundPage />} />
+                <Route path="projects" element={<ProjectList />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Route>
           </Routes>

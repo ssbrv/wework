@@ -10,9 +10,9 @@ import { useDisclosure } from "@mantine/hooks";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
-import { EditUsernameRequest } from "../../http/request/EditUsernameRequest";
 import { useEffect } from "react";
 import { goodNotification } from "../../components/Notifications/Notifications";
+import { UpdateUserRequest } from "../../http/request/UpdateUserRequest";
 
 const Credentials = (): JSX.Element => {
   const [
@@ -25,7 +25,7 @@ const Credentials = (): JSX.Element => {
     { open: pressEditUsername, close: unpressEditUsername },
   ] = useDisclosure(false);
 
-  const { user, editUsername } = useUser();
+  const { user, editUsername, isItMe } = useUser();
 
   const { handleException } = useException();
 
@@ -35,14 +35,23 @@ const Credentials = (): JSX.Element => {
     setError,
     formState: { errors },
     reset,
-  } = useForm<EditUsernameRequest>();
+  } = useForm<UpdateUserRequest>();
+
+  function resetForm(): void {
+    reset({
+      username: user?.username,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      sex: user?.sex,
+    });
+  }
 
   useEffect(() => {
-    reset({ username: user?.username });
-  }, [reset, user?.username]);
+    resetForm();
+  }, [user]);
 
   const handleEditUsername = handleSubmit(
-    async (editUsernameRequest: EditUsernameRequest) => {
+    async (editUsernameRequest: UpdateUserRequest) => {
       await editUsername(editUsernameRequest)
         .then(function () {
           goodNotification("Username was edited successfully!");
@@ -91,7 +100,7 @@ const Credentials = (): JSX.Element => {
             size="md"
             variant="outline"
             onClick={() => {
-              reset({ username: user?.username });
+              resetForm();
               unpressEditUsername();
             }}
           >
@@ -124,7 +133,7 @@ const Credentials = (): JSX.Element => {
         <Button
           radius="md"
           size="md"
-          className="btn-action"
+          className={`btn-action ${isItMe ? "visible" : "hidden"}`}
           onClick={openChangePassword}
         >
           Change password

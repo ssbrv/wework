@@ -6,9 +6,10 @@ import { RegisterRequest } from "../../http/request/RegisterRequest";
 import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
+import { useEffect } from "react";
 
 const RegisterPage = (): JSX.Element => {
-  const { register } = useAuth();
+  const { register, myId } = useAuth();
   const { handleException } = useException();
   const navigate = useNavigate();
 
@@ -20,6 +21,12 @@ const RegisterPage = (): JSX.Element => {
     getValues,
   } = useForm<RegisterRequest>();
 
+  useEffect(() => {
+    if (myId) {
+      navigate(`/${myId}/profile`);
+    }
+  }, [myId, navigate]);
+
   const registerUser = handleSubmit(
     async (registerRequest: RegisterRequest) => {
       await register(registerRequest)
@@ -28,7 +35,6 @@ const RegisterPage = (): JSX.Element => {
             "Successfully registrated!",
             "Welcome aboard, " + registerRequest.username + "!"
           );
-          navigate("/profile");
         })
         .catch(function (exception) {
           handleException(exception, setError);

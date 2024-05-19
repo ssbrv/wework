@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.enumeration.TaskStatus;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

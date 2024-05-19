@@ -1,8 +1,7 @@
-package cz.cvut.fit.sabirdan.wework.enumeration;
+package cz.cvut.fit.sabirdan.wework.domain.enumeration;
 
 public enum MembershipStatus {
     ENABLED, // default
-    DISABLED, // disabled by system admin
     PROPOSED, // invited to the project
     REJECTED, // declined invitation
     KICKED, // kicked by other member who has authority

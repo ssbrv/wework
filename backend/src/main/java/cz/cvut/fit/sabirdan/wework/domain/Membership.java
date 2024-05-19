@@ -1,7 +1,8 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.domain.role.MemberRole;
-import cz.cvut.fit.sabirdan.wework.enumeration.MembershipStatus;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,10 @@ public class Membership extends EntityWithIdLong {
     private User member;
 
     @ManyToOne
+    @JoinColumn(name = "inviter_id")
+    private User inviter = null;
+
+    @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
@@ -51,9 +56,42 @@ public class Membership extends EntityWithIdLong {
     // invitation
     public Membership(User member,
                       Project project,
+                      User inviter,
                       MemberRole role) {
         this.member = member;
         this.project = project;
+        this.inviter = inviter;
         this.role = role;
+    }
+
+    public boolean isAuthorized(Authorization authorization) {
+        return (this.role != null && this.role.isAuthorized(authorization));
+    }
+
+    public boolean hasAuthorityOver(Membership membership) {
+        return (this.role != null && this.role.hasAuthorityOver(membership.getRole()));
+    }
+
+    public boolean hasAuthorityOver(MemberRole role) {
+        return (this.role != null && this.role.hasAuthorityOver(role));
+    }
+
+    public void accept() {
+        this.startedAt = LocalDateTime.now();
+        this.status = MembershipStatus.ENABLED;
+    }
+
+    public void reject() {
+        this.status = MembershipStatus.REJECTED;
+    }
+
+    public void leave() {
+        this.endedAt = LocalDateTime.now();
+        this.status = MembershipStatus.LEFT;
+    }
+
+    public void kick() {
+        this.endedAt = LocalDateTime.now();
+        this.status = MembershipStatus.KICKED;
     }
 }

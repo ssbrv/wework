@@ -16,4 +16,6 @@ public class TaskController {
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
+
+    // TODO: create, read one, read all from project, read all, update status, update, delete
 }

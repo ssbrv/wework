@@ -5,12 +5,12 @@ import cz.cvut.fit.sabirdan.wework.http.request.AuthenticationRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangePasswordRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.LogoutRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.RegisterRequest;
-import cz.cvut.fit.sabirdan.wework.http.response.AuthenticationResponse;
+import cz.cvut.fit.sabirdan.wework.http.response.user.AuthenticationResponse;
 import cz.cvut.fit.sabirdan.wework.service.jwt.JwtService;
+import cz.cvut.fit.sabirdan.wework.service.role.system.SystemRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final SystemRoleService systemRoleService;
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
         User user = new User(
@@ -35,16 +36,19 @@ public class AuthenticationService {
                 registerRequest.getLastName()
         );
 
-        userService.save(user);
+        user.setRole(systemRoleService.getUserSystemRole());
+
+        user = userService.save(user);
         String jwtToken = jwtService.generateJwtToken(user);
 
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)
+                .id(user.getId())
                 .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userService.findByUsername(authenticationRequest.getUsername());
+        User user = userService.getByUsername(authenticationRequest.getUsername());
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -57,16 +61,17 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)
+                .id(user.getId())
                 .build();
     }
 
     public void logout(LogoutRequest logoutRequest) {
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         jwtService.logout(logoutRequest.getJwtToken(), user);
     }
 
     public AuthenticationResponse fullLogout() {
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         return fullLogout(user);
     }
 
@@ -76,11 +81,12 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .jwtToken(jwtToken)
+                .id(user.getId())
                 .build();
     }
 
     public AuthenticationResponse changePassword(ChangePasswordRequest changePasswordRequest) {
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

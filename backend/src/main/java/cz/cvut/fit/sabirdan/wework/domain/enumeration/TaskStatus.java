@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.enumeration;
+package cz.cvut.fit.sabirdan.wework.domain.enumeration;
 
 // TODO: consider reworking this as a class, which will allow custom statuses (tags)
 public enum TaskStatus {

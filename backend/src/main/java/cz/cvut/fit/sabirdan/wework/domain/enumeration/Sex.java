@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.enumeration;
+package cz.cvut.fit.sabirdan.wework.domain.enumeration;
 
 import lombok.Getter;
 

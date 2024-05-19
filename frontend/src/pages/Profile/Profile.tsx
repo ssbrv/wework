@@ -7,10 +7,12 @@ import { goodNotification } from "../../components/Notifications/Notifications";
 import BasicInformation from "./BasicInformation";
 import Credentials from "./Credentials";
 import { useDisclosure } from "@mantine/hooks";
+import { useUser } from "../../hooks/UserProvider";
 
 const ProfilePage = (): JSX.Element => {
   const { handleException } = useException();
   const { fullLogout } = useAuth();
+  const { isItMe } = useUser();
 
   const [fullLogoutOpened, { open: openFullLogout, close: closeFullLogout }] =
     useDisclosure(false);
@@ -30,7 +32,7 @@ const ProfilePage = (): JSX.Element => {
 
   return (
     <div className="p-l flex flex-col gap-m">
-      <Header name="Profile" />
+      <Header name={isItMe ? "My profile" : "Profile"} />
 
       <div className="flex gap-m flex-wrap">
         <BasicInformation />
@@ -38,18 +40,18 @@ const ProfilePage = (): JSX.Element => {
       </div>
       <ButtonBar>
         <Button radius="md" size="md" className="btn-danger">
-          Freeze my account
+          Freeze account
         </Button>
         <Button radius="md" size="md" className="btn-danger">
-          Delete my account
+          Delete account
         </Button>
         <Button
           radius="md"
           size="md"
-          className="btn-danger"
+          className={`btn-danger ${isItMe ? "visible" : "hidden"}`}
           onClick={openFullLogout}
         >
-          Logout all other devices
+          Logout from all other devices
         </Button>
       </ButtonBar>
 

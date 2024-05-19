@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.enumeration.ProjectStatus;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class Project extends EntityWithIdLong {
     private String name;
     @Column
     private String description;
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProjectStatus status = ProjectStatus.ENABLED;
 

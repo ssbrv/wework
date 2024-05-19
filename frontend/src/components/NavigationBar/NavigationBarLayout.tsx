@@ -18,26 +18,8 @@ interface NavigationOption {
   link: string;
 }
 
-export const navigationOptions: NavigationOption[] = [
-  {
-    icon: <Album className="size-sm flex-shrink-0" />,
-    label: "My projects",
-    link: "/projects",
-  },
-  {
-    icon: <Checkbox className="size-sm flex-shrink-0" />,
-    label: "My tasks",
-    link: "/tasks",
-  },
-  {
-    icon: <User className="size-sm flex-shrink-0" />,
-    label: "My profile",
-    link: "/profile",
-  },
-];
-
 const NavigationBarLayout = (): JSX.Element => {
-  const { logout } = useAuth();
+  const { logout, myId } = useAuth();
   const [navigationBarRolled, setNavigationBarRolled] = useState(false);
 
   function rollNavigationBar(): void {
@@ -49,6 +31,24 @@ const NavigationBarLayout = (): JSX.Element => {
   const [selectedSection, setSelectedSection] = useState<string>(
     location.pathname.split("/")[1]
   );
+
+  const navigationOptions: NavigationOption[] = [
+    {
+      icon: <Album className="size-sm flex-shrink-0" />,
+      label: "My projects",
+      link: "/projects",
+    },
+    {
+      icon: <Checkbox className="size-sm flex-shrink-0" />,
+      label: "My tasks",
+      link: "/tasks",
+    },
+    {
+      icon: <User className="size-sm flex-shrink-0" />,
+      label: "My profile",
+      link: `${myId}/profile`,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">

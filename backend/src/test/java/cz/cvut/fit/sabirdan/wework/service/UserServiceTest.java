@@ -34,7 +34,7 @@ public class UserServiceTest {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
         // Act
-        User result = userService.findByUsername(user.getUsername());
+        User result = userService.getByUsername(user.getUsername());
 
         // Assert
         assertEquals(user, result);
@@ -50,7 +50,7 @@ public class UserServiceTest {
 
         // Act and Assert
         NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> {
-            userService.findByUsername(usernameOfNonExistingUser);
+            userService.getByUsername(usernameOfNonExistingUser);
         });
         assertEquals(expectedMessage, notFoundException.getMessage());
         assertEquals(expectedAttribute, notFoundException.getAttribute());

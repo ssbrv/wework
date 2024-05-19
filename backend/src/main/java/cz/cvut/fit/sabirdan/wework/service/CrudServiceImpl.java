@@ -3,6 +3,7 @@ package cz.cvut.fit.sabirdan.wework.service;
 import cz.cvut.fit.sabirdan.wework.domain.EntityWithIdLong;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class CrudServiceImpl<T extends EntityWithIdLong> implements CrudService<T> {
@@ -17,7 +18,7 @@ public abstract class CrudServiceImpl<T extends EntityWithIdLong> implements Cru
     }
 
     @Override
-    public Iterable<T> findAll() {
+    public List<T> findAll() {
         return getRepository().findAll();
     }
 

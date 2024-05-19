@@ -1,4 +1,4 @@
-package cz.cvut.fit.sabirdan.wework.http.response;
+package cz.cvut.fit.sabirdan.wework.http.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationResponse {
     private String jwtToken;
+    private Long id;
 }

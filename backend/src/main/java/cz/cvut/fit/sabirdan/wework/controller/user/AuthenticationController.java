@@ -5,7 +5,7 @@ import cz.cvut.fit.sabirdan.wework.http.request.ChangePasswordRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.LogoutRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.RegisterRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.AttributeErrorResponse;
-import cz.cvut.fit.sabirdan.wework.http.response.AuthenticationResponse;
+import cz.cvut.fit.sabirdan.wework.http.response.user.AuthenticationResponse;
 import cz.cvut.fit.sabirdan.wework.service.user.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 

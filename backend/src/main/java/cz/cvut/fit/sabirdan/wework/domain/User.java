@@ -1,8 +1,8 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.domain.role.SystemRole;
-import cz.cvut.fit.sabirdan.wework.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.enumeration.Sex;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.Sex;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +32,7 @@ public class User extends EntityWithIdLong implements UserDetails {
     private String lastName;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Sex sex = Sex.UNSPECIFIED;
 
     @Column(nullable = false)
@@ -44,6 +45,9 @@ public class User extends EntityWithIdLong implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Membership> memberships = new HashSet<>();
+
+    @OneToMany(mappedBy = "inviter")
+    private Set<Membership> sentInvitations = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
     private Set<Task> authoredTasks = new HashSet<>();
@@ -99,5 +103,17 @@ public class User extends EntityWithIdLong implements UserDetails {
 
     public void setLastFullLogoutDate(LocalDateTime lastFullLogoutDate) {
         this.lastFullLogoutDate = lastFullLogoutDate.minusSeconds(1);
+    }
+
+    public boolean isAuthorized(Authorization authorization) {
+        return (this.role != null && this.role.isAuthorized(authorization));
+    }
+
+    public boolean hasAuthorityOver(User user) {
+        return (this.role != null && this.role.hasAuthorityOver(user.getRole()));
+    }
+
+    public boolean hasAuthorityOver(SystemRole role) {
+        return (this.role != null && this.role.hasAuthorityOver(role));
     }
 }

@@ -6,9 +6,10 @@ import { useForm } from "react-hook-form";
 import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
+import { useEffect } from "react";
 
 const LoginPage = (): JSX.Element => {
-  const { login } = useAuth();
+  const { login, myId } = useAuth();
   const { handleException } = useException();
   const navigate = useNavigate();
 
@@ -19,6 +20,12 @@ const LoginPage = (): JSX.Element => {
     formState: { errors },
   } = useForm<AuthRequest>();
 
+  useEffect(() => {
+    if (myId) {
+      navigate(`/${myId}/profile`);
+    }
+  }, [myId, navigate]);
+
   const loginUser = handleSubmit(async (authRequest: AuthRequest) => {
     await login(authRequest)
       .then(function () {
@@ -26,7 +33,6 @@ const LoginPage = (): JSX.Element => {
           "Successfully logged in!",
           "Welcome back, " + authRequest.username + "!"
         );
-        navigate("/profile");
       })
       .catch(function (exception) {
         console.log("The exceptoin was caught while trying to log in");

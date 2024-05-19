@@ -1,26 +1,45 @@
-import { createContext, useCallback, useContext, useMemo } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useSWR from "swr";
-import { User } from "../http/response/User";
+import { User } from "../domain/User";
 import { getFetcher } from "../api/fetchers";
 import { useException } from "./ExceptionProvider";
 import api from "../api/api";
-import { EditBasicRequest } from "../http/request/EditBasicRequest";
-import { Outlet } from "react-router-dom";
-import { EditUsernameRequest } from "../http/request/EditUsernameRequest";
+import { Outlet, useParams } from "react-router-dom";
+import { UpdateUserRequest } from "../http/request/UpdateUserRequest";
+import { useAuth } from "./AuthProvider";
 
 interface UserContextProps {
+  isItMe: boolean;
   user: User | undefined;
-  editBasic: (editBasicRequest: EditBasicRequest) => Promise<void>;
-  editUsername: (editUsernameRequest: EditUsernameRequest) => Promise<void>;
+  editBasic: (editBasicRequest: UpdateUserRequest) => Promise<void>;
+  editUsername: (editUsernameRequest: UpdateUserRequest) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 const UserProvider = (): JSX.Element => {
+  const { myId } = useAuth();
+
+  const { userId } = useParams<{ userId: string }>();
+  const [isItMe, setIsItMe] = useState<boolean>(userId === myId);
   const { handleException } = useException();
 
-  console.log("get/me");
-  const { data: user, error, mutate } = useSWR<User>("user/me", getFetcher);
+  useEffect(() => {
+    setIsItMe(userId === myId);
+  }, [userId, myId]);
+
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR<User>(`users/${userId}`, getFetcher);
 
   if (error) {
     console.log("The exception was caught while fetching data from get/me");
@@ -28,23 +47,23 @@ const UserProvider = (): JSX.Element => {
   }
 
   const editBasic = useCallback(
-    async (editBasicRequest: EditBasicRequest): Promise<void> => {
-      await api.put("user/me/basic", editBasicRequest);
+    async (editBasicRequest: UpdateUserRequest): Promise<void> => {
+      await api.put(`users/${userId}`, editBasicRequest);
       mutate();
     },
-    [mutate]
+    [mutate, userId]
   );
 
   const editUsername = useCallback(
-    async (editUsernameRequest: EditUsernameRequest): Promise<void> => {
-      await api.put("user/me/username", editUsernameRequest);
+    async (editUsernameRequest: UpdateUserRequest): Promise<void> => {
+      await api.put(`users/${userId}`, editUsernameRequest);
       mutate();
     },
-    [mutate]
+    [mutate, userId]
   );
 
   const contextValue = useMemo(
-    () => ({ user, editBasic, editUsername }),
+    () => ({ user, editBasic, editUsername, isItMe }),
     [editBasic, editUsername, user]
   );
   return (

@@ -26,3 +26,8 @@ application:
     jwt:
       secret-key: 8263003b6b5e27ca610417e781daad0da03badc797c67af86e9b0565d6620b58
       expiration: 86400000 # 1 day
+  system-role:
+    super-admin:
+      name: superadmin
+    user:
+      name: user

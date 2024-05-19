@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { ChangePasswordRequest } from "../http/request/ChangePasswordRequest";
 
 interface AuthContextProps {
+  myId: string | null;
+  setMyId: (newId: string | null) => void;
   token: string | null;
   setToken: (newToken: string | null) => void;
   login: (authRequest: AuthRequest) => Promise<void>;
@@ -35,8 +37,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [token, setToken_] = useState<string | null>(
     localStorage.getItem("token")
   );
+  const [myId, setMyId_] = useState<string | null>(
+    localStorage.getItem("myId")
+  );
+
   const [tokenLoaded, setTokenLoaded] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const setMyId = (newId: string | null): void => {
+    setMyId_(newId);
+  };
 
   const setToken = (newToken: string | null): void => {
     setTokenLoaded(false);
@@ -62,16 +72,27 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setTokenLoaded(true);
   }, [token]);
 
+  useEffect(() => {
+    if (myId) {
+      localStorage.setItem("myId", myId);
+      return;
+    }
+
+    localStorage.removeItem("myId");
+  }, [myId]);
+
   const login = useCallback(async (authRequest: AuthRequest): Promise<void> => {
     const authResponse = await api.post("auth/authenticate", authRequest);
     console.log("Loging in and setting the local token");
     setToken(authResponse.data.jwtToken);
+    setMyId(authResponse.data.id.toString());
   }, []);
 
   const register = useCallback(
     async (registerRequest: RegisterRequest): Promise<void> => {
       const authResponse = await api.post("auth/register", registerRequest);
       setToken(authResponse.data.jwtToken);
+      setMyId(authResponse.data.id.toString());
     },
     []
   );
@@ -84,6 +105,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     // remove token from storage
     console.log("Loging out and removing the local token");
     setToken(null);
+    setMyId(null);
     // delete swr cache
     mutate(() => true, undefined, { revalidate: false });
     navigate("/login");
@@ -109,6 +131,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
+      myId,
+      setMyId,
       token,
       setToken,
       login,
@@ -117,7 +141,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       fullLogout,
       changePassword,
     }),
-    [fullLogout, login, logout, register, changePassword, token]
+    [myId, token, login, register, logout, fullLogout, changePassword]
   );
 
   return (

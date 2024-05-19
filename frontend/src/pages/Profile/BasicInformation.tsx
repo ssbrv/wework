@@ -3,7 +3,7 @@ import { useUser } from "../../hooks/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
 import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
-import { EditBasicRequest } from "../../http/request/EditBasicRequest";
+import { UpdateUserRequest } from "../../http/request/UpdateUserRequest";
 import { useEffect } from "react";
 import { goodNotification } from "../../components/Notifications/Notifications";
 
@@ -21,10 +21,11 @@ const BasicInformation = (): JSX.Element => {
     setError,
     formState: { errors },
     reset,
-  } = useForm<EditBasicRequest>();
+  } = useForm<UpdateUserRequest>();
 
   function resetForm(): void {
     reset({
+      username: user?.username,
       firstName: user?.firstName,
       lastName: user?.lastName,
       sex: user?.sex,
@@ -36,10 +37,10 @@ const BasicInformation = (): JSX.Element => {
   }, [user]);
 
   const handleEdit = handleSubmit(
-    async (editBasicRequest: EditBasicRequest) => {
+    async (editBasicRequest: UpdateUserRequest) => {
       await editBasic(editBasicRequest)
         .then(function () {
-          goodNotification("Your basic information was edited successfully!");
+          goodNotification("Basic information was edited successfully!");
           unpressEdit();
         })
         .catch(function (exception) {
@@ -107,7 +108,7 @@ const BasicInformation = (): JSX.Element => {
             className="btn-action"
             onClick={pressEdit}
           >
-            Edit username
+            Edit basic information
           </Button>
         </div>
       ) : (
