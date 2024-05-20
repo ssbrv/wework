@@ -24,3 +24,9 @@ Or manually:
 3. npm run build-custom
 4. cd ../backend
 5. mvn spring-boot:run
+
+# How to aceess databse
+
+Change in the following screept it of your docker container and run:
+
+- ./run-docker-shell.sh
