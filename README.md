@@ -12,9 +12,11 @@ A project manager application, where you can join projects or create your own an
 
 # Build and Run
 
+Run script:
+
 - ./build-and-run.sh
 
-Or:
+Or manually:
 
 0. make sure docker engine is running
 1. cd frontend
