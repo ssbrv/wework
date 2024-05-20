@@ -7,7 +7,6 @@ import { List } from "../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../components/Affix/ScrollUpAffix";
 import { Button, Modal } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { UserX } from "tabler-icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import InviteUserForm from "../ProjectMembers/InviteUserForm";
 
@@ -32,15 +31,11 @@ const ProjectInvitations = (): JSX.Element => {
   }
 
   const transformedInvitations = invitations?.map((invitation) => ({
-    id: invitation.member.id,
+    id: invitation.id,
     name: invitation.member.username,
     fullName: invitation.member.firstName + " " + invitation.member.lastName,
     roleName: invitation.role.name,
   }));
-
-  function cancelInvitation(id: number): void {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <div className="flex flex-col gap-m">
@@ -58,16 +53,8 @@ const ProjectInvitations = (): JSX.Element => {
         ]}
         list={transformedInvitations}
         onItemClick={(invitation) => {
-          navigate(`/${invitation.id}/profile`);
+          navigate(`./${invitation.id}`);
         }}
-        itemToolBar={[
-          {
-            index: 0,
-            function: (item: Membership) => cancelInvitation(item.id),
-            icon: <UserX />,
-            toolTipLabel: "Cancel invitation",
-          },
-        ]}
         displayAttributes={[
           {
             index: 0,

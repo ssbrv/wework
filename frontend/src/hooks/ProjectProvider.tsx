@@ -1,14 +1,17 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import { getFetcher } from "../api/fetchers";
 import { useException } from "./ExceptionProvider";
 import { Outlet, useParams } from "react-router-dom";
 import { Project } from "../domain/Project";
 import { Loader } from "@mantine/core";
+import { Task } from "../domain/Task";
 
 interface ProjectContextProps {
   project: Project | undefined;
+  tasks: Task[] | undefined;
   mutate: KeyedMutator<Project>;
+  mutateTasks: KeyedMutator<Task[]>;
 }
 
 const ProjectContext = createContext<ProjectContextProps | undefined>(
@@ -18,32 +21,40 @@ const ProjectContext = createContext<ProjectContextProps | undefined>(
 const ProjectProvider = (): JSX.Element => {
   const { projectId } = useParams<{ projectId: string }>();
   const { handleException } = useException();
-  const [projectLoaded, setProjectLoaded] = useState(false);
 
   const {
     data: project,
     error,
     mutate,
+    isLoading,
   } = useSWR<Project>(`projects/${projectId}`, getFetcher);
 
-  useEffect(() => {
-    if (project) setProjectLoaded(true);
-  }, [project]);
-
   if (error) {
-    console.log("The exception was caught while fetching data from users/id");
+    console.log(
+      "The exception was caught while fetching data from projects/projectId"
+    );
     handleException(error, undefined, true);
   }
 
-  const contextValue = useMemo(() => ({ project, mutate }), [mutate, project]);
+  const {
+    data: tasks,
+    error: errorTasks,
+    mutate: mutateTasks,
+    isLoading: isLoadingTasks,
+  } = useSWR<Task[]>(`tasks/projects/${projectId}`, getFetcher);
+
+  const contextValue = useMemo(
+    () => ({ tasks, project, mutate, mutateTasks }),
+    [mutate, mutateTasks, project, tasks]
+  );
   return (
     <ProjectContext.Provider value={contextValue}>
-      {projectLoaded ? (
-        <Outlet />
-      ) : (
+      {isLoading ? (
         <div className="min-h-screen flex justify-center items-center">
           <Loader />
         </div>
+      ) : (
+        <Outlet />
       )}
     </ProjectContext.Provider>
   );

@@ -1,11 +1,10 @@
 package cz.cvut.fit.sabirdan.wework.controller;
 
-import cz.cvut.fit.sabirdan.wework.domain.Membership;
+import cz.cvut.fit.sabirdan.wework.http.request.ChangeProjectStatusRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.CreateUpdateProjectRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.membership.MembershipDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.project.CreateProjectResponse;
 import cz.cvut.fit.sabirdan.wework.http.response.project.ProjectDTO;
-import cz.cvut.fit.sabirdan.wework.http.response.user.SafeUserDTO;
 import cz.cvut.fit.sabirdan.wework.service.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +55,19 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getInvitationsByProjectId(projectId).stream().map(MembershipDTO::new).collect(Collectors.toList()));
     }
 
-    // TODO: delete project
-    // TODO: update project status
+    @PutMapping("{projectId}/membership")
+    public void leaveProject(@PathVariable Long projectId) {
+        projectService.leaveProject(projectId);
+    }
+
+    @PutMapping("{projectId}/status")
+    public void changeProjectStatus(@PathVariable Long projectId, @Validated @RequestBody ChangeProjectStatusRequest changeProjectStatusRequest) {
+        projectService.changeProjectStatus(projectId, changeProjectStatusRequest);
+    }
+
+    @DeleteMapping("{projectId}")
+    public void deleteProject(@PathVariable Long projectId) {
+        projectService.deleteProject(projectId);
+    }
+
 }

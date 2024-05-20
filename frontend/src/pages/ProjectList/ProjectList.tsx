@@ -70,20 +70,13 @@ const ProjectList = (): JSX.Element => {
       {projects ? (
         filteredProjects && filteredProjects.length > 0 ? (
           <div className="grid grid-cols-3 gap-m max-sm:grid-cols-1 max-md:grid-cols-2">
-            {filteredProjects?.map((project) => (
-              <ProjectCard
-                key={project.id}
-                name={project.name}
-                description={project.description}
-                id={project.id}
-                status={project.status}
-                memberCount={project.memberCount}
-              />
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         ) : (
           <div className="mt-md text-center fnt-lg">
-            Don't have any projects yet? Create one!
+            All clear. No projects found!
           </div>
         )
       ) : (

@@ -38,7 +38,6 @@ public class Membership extends EntityWithIdLong {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    // TODO: assign default role
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private MemberRole role;

@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Project } from "../../domain/Project";
 import { Users } from "tabler-icons-react";
 
-export const ProjectCard = (project: Project): JSX.Element => {
+interface Props {
+  project: Project;
+}
+
+export const ProjectCard = ({ project }: Props): JSX.Element => {
   const navigate = useNavigate();
 
   return (

@@ -48,6 +48,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.changePassword(changePasswordRequest));
     }
 
+    @DeleteMapping
+    public void deleteMyAccount() {
+        authenticationService.deleteMyAccount();
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<AttributeErrorResponse> authenticationExceptionToInvalidPassword(AuthenticationException ignore) {
         return ResponseEntity

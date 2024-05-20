@@ -6,3 +6,4 @@ export type MembershipStatus =
   | "KICKED"
   | "LEFT";
 export type ProjectStatus = "ENABLED" | "DISABLED";
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED";

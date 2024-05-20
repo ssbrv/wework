@@ -5,6 +5,7 @@ import {
   Logout,
   Album,
   User,
+  UserPlus,
 } from "tabler-icons-react";
 import { useState } from "react";
 import { NavigationBarItem } from "./NavigationBarItem";
@@ -44,9 +45,14 @@ const NavigationBarLayout = (): JSX.Element => {
       link: "/tasks",
     },
     {
+      icon: <UserPlus className="size-sm flex-shrink-0" />,
+      label: "My invitations",
+      link: `/invitations`,
+    },
+    {
       icon: <User className="size-sm flex-shrink-0" />,
       label: "My profile",
-      link: `${myId}/profile`,
+      link: `/users/${myId}/profile`,
     },
   ];
 
@@ -55,7 +61,7 @@ const NavigationBarLayout = (): JSX.Element => {
       <div
         className={`${
           navigationBarRolled ? "w-60" : "w-20"
-        } hover:w-60 h-screen fixed flex flex-col p-s gap-m bg-secondary rounded-r shadow transition-[width] duration-500 ease-out z-20 overflow-auto`}
+        } hover:w-60 h-screen fixed flex flex-col p-s gap-m bg-secondary rounded-r shadow transition-[width] duration-500 ease-out z-50 overflow-auto`}
       >
         <NavigationBarItem
           icon={

@@ -22,7 +22,7 @@ public class Task extends EntityWithIdLong{
     @Column(nullable = false)
     private String summary;
 
-    @Column
+    @Column(length = 1500)
     private String description;
 
     @ManyToOne
@@ -38,14 +38,6 @@ public class Task extends EntityWithIdLong{
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> assignees = new HashSet<>();
-
-    public Task(String summary, String description, Project project, User author, Set<User> assignees) {
-        this.summary = summary;
-        this.description = description;
-        this.project = project;
-        this.author = author;
-        this.assignees = assignees;
-    }
 
     public Task(String summary, String description, Project project, User author) {
         this.summary = summary;

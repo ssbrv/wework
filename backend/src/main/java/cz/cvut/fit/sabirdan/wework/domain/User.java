@@ -38,7 +38,6 @@ public class User extends EntityWithIdLong implements UserDetails {
     @Column(nullable = false)
     private LocalDateTime lastFullLogoutDate = LocalDateTime.now().minusSeconds(1);
 
-    // TODO: assign basic system role
     @ManyToOne
     @JoinColumn(name = "role_id")
     private SystemRole role;
@@ -115,5 +114,17 @@ public class User extends EntityWithIdLong implements UserDetails {
 
     public boolean hasAuthorityOver(SystemRole role) {
         return (this.role != null && this.role.hasAuthorityOver(role));
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (Task task : authoredTasks)
+            task.setAuthor(null);
+
+        for (Task task : assignedTasks)
+            task.getAssignees().remove(this);
+
+        for (Membership invitation : sentInvitations)
+            invitation.setInviter(null);
     }
 }

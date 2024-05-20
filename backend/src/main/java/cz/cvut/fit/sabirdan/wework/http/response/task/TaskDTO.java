@@ -33,7 +33,7 @@ public class TaskDTO {
                 task.getSummary(),
                 task.getDescription(),
                 new ProjectDTO(task.getProject()),
-                new SafeUserDTO(task.getAuthor()),
+                (task.getAuthor() != null) ? new SafeUserDTO(task.getAuthor()) : null,
                 new HashSet<>(task.getAssignees().stream().map(SafeUserDTO::new).collect(Collectors.toSet()))
         );
     }

@@ -4,10 +4,13 @@ import cz.cvut.fit.sabirdan.wework.domain.Membership;
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.exception.UnauthorizedException;
+import cz.cvut.fit.sabirdan.wework.http.request.ChangeMembershipStatusRequest;
+import cz.cvut.fit.sabirdan.wework.http.request.ChangeProjectStatusRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.CreateUpdateProjectRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.project.CreateProjectResponse;
 import cz.cvut.fit.sabirdan.wework.http.response.project.ProjectDTO;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -127,7 +131,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
             throw new BadRequestException("You cannot edit closed project's name and description");
 
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        Optional<Membership> optionalMembership = membershipService.findMembershipByProjectIdAndUsername(projectId, editor.getUsername());
+        Optional<Membership> optionalMembership = membershipService.findEnabledMembershipByProjectIdAndUsername(projectId, editor.getUsername());
 
         final boolean hasMemberAuthority = (optionalMembership.map(membership -> (membership.isAuthorized(Authorization.EDIT_PROJECT_BASIC))).orElse(false));
         final boolean hasSystemAuthority = (editor.isAuthorized(Authorization.SYSTEM_EDIT_PROJECT_BASIC));
@@ -149,5 +153,54 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     public List<Membership> getInvitationsByProjectId(Long projectId) {
         getProjectById(projectId); // this ensures authorizations
         return projectRepository.getInvitationsByProjectId(projectId);
+    }
+
+    @Override
+    public void leaveProject(Long projectId) {
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        getUserProjectById(projectId, user.getUsername()); // this ensures authorizations and project existence
+
+        Membership membership = membershipService.findEnabledMembershipByProjectIdAndUsername(projectId, user.getUsername())
+                .orElseThrow(() -> new BadRequestException("You are not a part of this project"));
+
+        membershipService.changeMembershipStatus(membership.getId(), new ChangeMembershipStatusRequest(MembershipStatus.LEFT));
+    }
+
+    @Override
+    public void changeProjectStatus(Long projectId, ChangeProjectStatusRequest changeProjectStatusRequest) {
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Project project = getProjectById(projectId); // this ensures authorizations
+
+        if (user.isAuthorized(Authorization.SYSTEM_CHANGE_PROJECT_STATUS)) {
+            project.setStatus(changeProjectStatusRequest.getStatus());
+            return;
+        }
+
+        Membership membership = membershipService.findEnabledMembershipByProjectIdAndUsername(projectId, user.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("You are not a part of this project"));
+
+        if (!membership.isAuthorized(Authorization.CHANGE_PROJECT_STATUS))
+            throw new UnauthorizedException("You are not authorized to change project status");
+
+        project.setStatus(changeProjectStatusRequest.getStatus());
+    }
+
+    @Override
+    public void deleteProject(Long projectId) {
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Project project = getProjectById(projectId); // this ensures authorizations
+
+        if (user.isAuthorized(Authorization.SYSTEM_DELETE_PROJECT)) {
+            deleteById(projectId);
+            return;
+        }
+
+        Membership membership = membershipService.findEnabledMembershipByProjectIdAndUsername(projectId, user.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("You are not a part of this project"));
+
+        if (!membership.isAuthorized(Authorization.DELETE_PROJECT))
+            throw new UnauthorizedException("You are not authorized to delete this project");
+
+        deleteById(projectId);
     }
 }

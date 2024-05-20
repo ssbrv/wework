@@ -7,7 +7,6 @@ import { List } from "../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../components/Affix/ScrollUpAffix";
 import { Button, Modal } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { UserX } from "tabler-icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import InviteUserForm from "./InviteUserForm";
 
@@ -31,15 +30,11 @@ const ProjectMembers = (): JSX.Element => {
   }
 
   const transformedMemberships = memberships?.map((membership) => ({
-    id: membership.member.id,
+    id: membership.id,
     name: membership.member.username,
     fullName: membership.member.firstName + " " + membership.member.lastName,
     roleName: membership.role.name,
   }));
-
-  function openKickMember(id: number): void {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <div className="flex flex-col gap-m">
@@ -57,16 +52,8 @@ const ProjectMembers = (): JSX.Element => {
         ]}
         list={transformedMemberships}
         onItemClick={(member) => {
-          navigate(`/${member.id}/profile`);
+          navigate(`${member.id}`);
         }}
-        itemToolBar={[
-          {
-            index: 0,
-            function: (item: Membership) => openKickMember(item.id),
-            icon: <UserX />,
-            toolTipLabel: "Kick member",
-          },
-        ]}
         displayAttributes={[
           {
             index: 0,

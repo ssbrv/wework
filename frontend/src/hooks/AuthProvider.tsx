@@ -25,6 +25,7 @@ interface AuthContextProps {
   changePassword: (
     changePasswordRequest: ChangePasswordRequest
   ) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -129,6 +130,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
+  const deleteAccount = useCallback(async (): Promise<void> => {
+    await api.delete("auth");
+    setToken(null);
+    setMyId(null);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       myId,
@@ -140,8 +147,18 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       logout,
       fullLogout,
       changePassword,
+      deleteAccount,
     }),
-    [myId, token, login, register, logout, fullLogout, changePassword]
+    [
+      myId,
+      token,
+      login,
+      register,
+      logout,
+      fullLogout,
+      changePassword,
+      deleteAccount,
+    ]
   );
 
   return (

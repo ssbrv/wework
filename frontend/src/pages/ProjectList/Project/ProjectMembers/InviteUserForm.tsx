@@ -151,18 +151,20 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
         >
           Cancel
         </Button>
-        <Button
-          variant="outline"
-          size="md"
-          radius="md"
-          className="flex-1"
-          onClick={() => {
-            prevStep();
-            clearErrors();
-          }}
-        >
-          Go back
-        </Button>
+        {active !== 0 && (
+          <Button
+            variant="outline"
+            size="md"
+            radius="md"
+            className="flex-1"
+            onClick={() => {
+              prevStep();
+              clearErrors();
+            }}
+          >
+            Go back
+          </Button>
+        )}
         {active === 2 && (
           <Button
             radius="md"

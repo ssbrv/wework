@@ -10,13 +10,13 @@ import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.exception.UnauthorizedException;
+import cz.cvut.fit.sabirdan.wework.http.request.ChangeMemberRoleRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangeMembershipStatusRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.InviteRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.InviteResponse;
 import cz.cvut.fit.sabirdan.wework.repository.MembershipRepository;
 import cz.cvut.fit.sabirdan.wework.repository.ProjectRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
-import cz.cvut.fit.sabirdan.wework.service.project.ProjectService;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -71,7 +73,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         if (inviter.isAuthorized(Authorization.SYSTEM_INVITE))
             return new InviteResponse(saveOrSubstituteMembership(membership).getId());
 
-        Membership inviterMembership = findMembershipByProjectIdAndUsername(
+        Membership inviterMembership = findEnabledMembershipByProjectIdAndUsername(
                 inviteRequest.getProjectId(),
                 inviter.getUsername()
         ).orElseThrow(() -> new UnauthorizedException("You are not a part of this project"));
@@ -89,8 +91,28 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
     }
 
     @Override
+    public Membership getById(Long id) {
+        Membership membership = super.findById(id)
+                .orElseThrow(() -> new NotFoundException("Membership does not exist"));
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (user.isAuthorized(Authorization.SYSTEM_READ_INVITATIONS))
+            return membership;
+
+        findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), user.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("You are not a part of this project"));
+
+        return membership;
+    }
+
+    @Override
     public Optional<Membership> findMembershipByProjectIdAndUsername(Long projectId, String username) {
         return membershipRepository.findMembershipByProjectIdAndUsername(projectId, username);
+    }
+
+    @Override
+    public Optional<Membership> findEnabledMembershipByProjectIdAndUsername(Long projectId, String username) {
+        return membershipRepository.findEnabledMembershipByProjectIdAndUsername(projectId, username);
     }
 
     @Override
@@ -110,22 +132,39 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         Membership membership = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new NotFoundException("Membership does not exist"));
         User member = membership.getMember();
-        Optional<Membership> optionalEditorMembership = findMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
+        Optional<Membership> optionalEditorMembership = findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
 
         final boolean hasMemberAuthority = optionalEditorMembership.map(membershipEditor ->
                         (membershipEditor.isAuthorized(Authorization.KICK) && membershipEditor.hasAuthorityOver(membership)))
                 .orElse(false);
         final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_CHANGE_MEMBERSHIP_STATUS) && editor.hasAuthorityOver(member);
-        final boolean selfChange = editor.getUsername().equals(changeMembershipStatusRequest.getUsername());
+        final boolean selfChange = editor.getUsername().equals(member.getUsername());
 
         if ((hasMemberAuthority || hasSystemAuthority)
                 && (membership.getStatus() == MembershipStatus.ENABLED || membership.getStatus() == MembershipStatus.PROPOSED)
                 && changeMembershipStatusRequest.getStatus() == MembershipStatus.KICKED) {
+
+            List<Membership> memberships = projectRepository.getMembershipsByProjectId(membership.getProject().getId());
+            if (memberships.size() == 1) {
+                projectRepository.deleteById(membership.getProject().getId());
+                return;
+            }
+
             membership.kick();
+
+            if (!membership.getRole().getId().equals(memberRoleService.getOwnerMemberRole().getId()))
+                return;
+
+            // If it was a role of owner, then grant owner's role to a random member
+            memberships.stream()
+                    .filter(m -> !Objects.equals(m.getId(), membership.getId()))
+                    .findAny()
+                    .ifPresent(m -> m.setRole(memberRoleService.getOwnerMemberRole()));
+
             return;
         }
 
-        if (!selfChange && !hasMemberAuthority)
+        if (!selfChange && !hasSystemAuthority)
             throw new UnauthorizedException("You are not authorized to perform this action");
 
         if (membership.getStatus() == MembershipStatus.PROPOSED && changeMembershipStatusRequest.getStatus() == MembershipStatus.ENABLED) {
@@ -133,19 +172,96 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
             return;
         }
 
-        if (!selfChange)
-            throw new BadRequestException("Invalid operation: cannot change membership status from " + membership.getStatus() + " to " + changeMembershipStatusRequest.getStatus());
-
         if (membership.getStatus() == MembershipStatus.PROPOSED && changeMembershipStatusRequest.getStatus() == MembershipStatus.REJECTED) {
             membership.reject();
             return;
         }
 
         if (membership.getStatus() == MembershipStatus.ENABLED && changeMembershipStatusRequest.getStatus() == MembershipStatus.LEFT) {
+
+            List<Membership> memberships = projectRepository.getMembershipsByProjectId(membership.getProject().getId());
+            if (memberships.size() == 1) {
+                projectRepository.deleteById(membership.getProject().getId());
+                return;
+            }
+
             membership.leave();
+
+            if (!membership.getRole().getId().equals(memberRoleService.getOwnerMemberRole().getId()))
+                return;
+
+            // If it was a role of owner, then grant owner's role to a random member
+            memberships.stream()
+                    .filter(m -> !Objects.equals(m.getId(), membership.getId()))
+                    .findAny()
+                    .ifPresent(m -> m.setRole(memberRoleService.getOwnerMemberRole()));
+
             return;
         }
 
+        if (membership.getStatus() == MembershipStatus.ENABLED && changeMembershipStatusRequest.getStatus() == MembershipStatus.KICKED)
+            throw new BadRequestException("You cannot kick yourself from the project");
+
         throw new BadRequestException("Invalid operation: cannot self change membership status from " + membership.getStatus() + " to " + changeMembershipStatusRequest.getStatus());
+    }
+
+    @Override
+    public List<Membership> getInvitations() {
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (user.isAuthorized(Authorization.SYSTEM_READ_INVITATIONS))
+            return membershipRepository.findInvitations();
+
+        return membershipRepository.findInvitationsByUsername(user.getUsername());
+    }
+
+    @Override
+    public void changeMemberRole(Long membershipId, ChangeMemberRoleRequest changeMemberRoleRequest) {
+        Membership membership = getById(membershipId);
+
+        if (membership.getStatus() != MembershipStatus.ENABLED && membership.getStatus() != MembershipStatus.PROPOSED)
+            throw new BadRequestException("Cannot change a role to a disabled member");
+
+        User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = membership.getMember();
+
+        MemberRole role = memberRoleService.findByName(changeMemberRoleRequest.getRoleName())
+                .orElseThrow(() -> new NotFoundException("roleName", "Role does not exist"));
+
+        Optional<Membership> optionalEditorMembership = findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
+
+        final boolean selfChange = user.getUsername().equals(editor.getUsername());
+
+        final boolean canChangeRole = optionalEditorMembership.map(editorMembership ->
+                (editorMembership.isAuthorized(Authorization.CHANGE_ROLE))).orElse(false);
+
+        final boolean hasMemberAuthority = optionalEditorMembership.map(editorMembership ->
+                (editorMembership.hasAuthorityOver(membership))
+        ).orElse(false);
+
+        final boolean canChooseThisRole = optionalEditorMembership.map(editorMembership ->
+                (editorMembership.hasAuthorityOver(role))
+        ).orElse(false);
+
+        final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_CHANGE_ROLE) && editor.hasAuthorityOver(user);
+
+        if (hasSystemAuthority) {
+            membership.setRole(role);
+            return;
+        }
+
+        if (selfChange)
+            throw new BadRequestException("You cannot change yourself a role");
+
+        if (!canChangeRole)
+            throw new UnauthorizedException("You are not authorized to change roles");
+
+        if (!hasMemberAuthority)
+            throw new UnauthorizedException("You are not authorized to change role of this member");
+
+        if (!canChooseThisRole)
+            throw new UnauthorizedException("roleName", "You are not authorized to choose this role");
+
+        membership.setRole(role);
     }
 }

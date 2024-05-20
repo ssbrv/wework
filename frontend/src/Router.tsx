@@ -18,6 +18,13 @@ import ProjectTasks from "./pages/ProjectList/Project/ProjectTasks/ProjectTasks"
 import ProjectMembers from "./pages/ProjectList/Project/ProjectMembers/ProjectMembers";
 import ProjectSettings from "./pages/ProjectList/Project/ProjectSettings/ProjectSettings";
 import ProjectInvitations from "./pages/ProjectList/Project/ProjectInvitations/ProjectInvitations";
+import InvitationList from "./pages/Invitations/InvitationList";
+import MembershipProvider from "./hooks/MembershipProvider";
+import ProjectMember from "./pages/ProjectList/Project/ProjectMembers/ProjectMember";
+import ProjectInvitation from "./pages/ProjectList/Project/ProjectInvitations/ProjectInvitation";
+import TaskList from "./pages/TaskList/TaskList";
+import TaskProvider from "./hooks/TaskProvider";
+import ProjectTask from "./pages/ProjectList/Project/ProjectTasks/ProjectTask.tsx/ProjectTask";
 
 export const Router = (): JSX.Element => {
   return (
@@ -32,26 +39,46 @@ export const Router = (): JSX.Element => {
             </Route>
             <Route element={<AuthGuard />}>
               <Route element={<NavigationBarLayout />}>
-                <Route path=":userId" element={<UserProvider />}>
-                  <Route path="profile" element={<ProfilePage />} />
+                <Route path="users">
+                  <Route path=":userId" element={<UserProvider />}>
+                    <Route path="profile" element={<ProfilePage />} />
+                  </Route>
                 </Route>
-                <Route path="tasks" element={<NotFoundPage />} />
                 <Route path="projects">
                   <Route path="" element={<ProjectList />} />
                   <Route path=":projectId" element={<ProjectProvider />}>
                     <Route path="" element={<ProjectLayout />}>
                       <Route path="details" element={<ProjectDetails />} />
-                      <Route path="tasks" element={<ProjectTasks />} />
-                      <Route path="members" element={<ProjectMembers />} />
-                      <Route
-                        path="invitations"
-                        element={<ProjectInvitations />}
-                      />
+                      <Route path="tasks">
+                        <Route path="" element={<ProjectTasks />} />
+                        <Route path=":taskId" element={<TaskProvider />}>
+                          <Route path="" element={<ProjectTask />} />
+                        </Route>
+                      </Route>
+                      <Route path="members">
+                        <Route path="" element={<ProjectMembers />} />
+                        <Route
+                          path=":membershipId"
+                          element={<MembershipProvider />}
+                        >
+                          <Route path="" element={<ProjectMember />} />
+                        </Route>
+                      </Route>
+                      <Route path="invitations">
+                        <Route path="" element={<ProjectInvitations />} />
+                        <Route
+                          path=":membershipId"
+                          element={<MembershipProvider />}
+                        >
+                          <Route path="" element={<ProjectInvitation />} />
+                        </Route>
+                      </Route>
                       <Route path="settings" element={<ProjectSettings />} />
                     </Route>
                   </Route>
                 </Route>
-
+                <Route path="/invitations" element={<InvitationList />} />
+                <Route path="tasks" element={<TaskList />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Route>

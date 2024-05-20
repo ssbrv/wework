@@ -98,4 +98,9 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         return fullLogout(user);
     }
+
+    public void deleteMyAccount() {
+        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        userService.deleteById(user.getId());
+    }
 }

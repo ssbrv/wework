@@ -22,7 +22,7 @@ const LoginPage = (): JSX.Element => {
 
   useEffect(() => {
     if (myId) {
-      navigate(`/${myId}/profile`);
+      navigate(`/users/${myId}/profile`);
     }
   }, [myId, navigate]);
 

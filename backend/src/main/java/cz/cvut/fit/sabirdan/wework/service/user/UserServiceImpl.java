@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -36,6 +38,11 @@ public class UserServiceImpl extends CrudServiceImpl<User> implements UserServic
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new NotFoundException("username", getEntityName() + " does not exist with username \"" + username + "\"")
         );
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
