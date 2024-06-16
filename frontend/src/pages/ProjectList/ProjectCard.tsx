@@ -19,7 +19,7 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
     >
       <div className="flex justify-between gap-xs">
         <div className="font-bold fnt-md">{project.name}</div>
-        <div className="mt-auto ml-auto flex gap-xs items-center">
+        <div className="flex gap-xs">
           <div>{project.memberCount}</div>
           <Users />
         </div>

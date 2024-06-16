@@ -5,10 +5,11 @@ import { getFetcher } from "../../../../api/fetchers";
 import { useException } from "../../../../hooks/ExceptionProvider";
 import { List } from "../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../components/Affix/ScrollUpAffix";
-import { Button, Modal } from "@mantine/core";
+import { Button, Modal, Tooltip } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import InviteUserForm from "./InviteUserForm";
+import { Users } from "tabler-icons-react";
 
 const ProjectMembers = (): JSX.Element => {
   const { handleException } = useException();
@@ -49,6 +50,19 @@ const ProjectMembers = (): JSX.Element => {
           >
             Invite user
           </Button>,
+          <Tooltip
+            label="Number of members"
+            position="bottom"
+            offset={{ mainAxis: 15, crossAxis: -40 }}
+            withArrow
+            arrowSize={8}
+            arrowRadius={4}
+          >
+            <div className="flex gap-xs">
+              <div>{project?.memberCount}</div>
+              <Users />
+            </div>
+          </Tooltip>,
         ]}
         list={transformedMemberships}
         onItemClick={(member) => {
