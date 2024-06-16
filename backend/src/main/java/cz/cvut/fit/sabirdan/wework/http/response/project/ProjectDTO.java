@@ -20,10 +20,7 @@ public class ProjectDTO {
 
 
     public ProjectDTO(Project project) {
-        this(
-                project,
-                null
-        );
+        this(project, null);
     }
 
     public ProjectDTO(Project project, Integer memberCount) {

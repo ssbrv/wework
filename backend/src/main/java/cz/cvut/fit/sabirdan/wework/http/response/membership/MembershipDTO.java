@@ -28,6 +28,10 @@ public class MembershipDTO {
     private RoleDTO role;
 
     public MembershipDTO(Membership membership) {
+        this(membership, null);
+    }
+
+    public MembershipDTO(Membership membership, Integer memberCounter) {
         this(
                 membership.getId(),
                 membership.getCreatedAt(),
@@ -36,7 +40,7 @@ public class MembershipDTO {
                 membership.getStatus(),
                 new SafeUserDTO(membership.getMember()),
                 (membership.getInviter() != null) ? new SafeUserDTO(membership.getInviter()) : null,
-                new ProjectDTO(membership.getProject()),
+                new ProjectDTO(membership.getProject(), memberCounter),
                 new RoleDTO(membership.getRole())
         );
     }
