@@ -12,7 +12,7 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
 
   return (
     <div
-      className="card p-m h-[250px] hover:bg-hover hover:cursor-pointer transition-all ease-linear duration-200 flex flex-col gap-s"
+      className="card p-m h-[235px] hover:bg-hover hover:cursor-pointer transition-all ease-linear duration-200 flex flex-col gap-s"
       onClick={() => {
         navigate(`/projects/${project.id}/details`);
       }}
