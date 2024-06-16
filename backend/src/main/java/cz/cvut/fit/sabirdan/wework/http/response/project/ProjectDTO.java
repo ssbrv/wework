@@ -21,10 +21,7 @@ public class ProjectDTO {
 
     public ProjectDTO(Project project) {
         this(
-                project.getId(),
-                project.getName(),
-                project.getDescription(),
-                project.getStatus(),
+                project,
                 null
         );
     }
