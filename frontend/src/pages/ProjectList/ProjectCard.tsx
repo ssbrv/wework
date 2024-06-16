@@ -24,7 +24,7 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
           <Users />
         </div>
       </div>
-      <Text lineClamp={6} className="whitespace-pre">
+      <Text lineClamp={6} className="whitespace-pre text-wrap">
         {project.description}
       </Text>
     </div>
