@@ -27,4 +27,6 @@ public interface MembershipService extends CrudService<Membership> {
     List<Membership> getInvitations();
 
     void changeMemberRole(Long membershipId, ChangeMemberRoleRequest changeMemberRoleRequest);
+
+    Integer countEnabledMembershipsByProjectId(Long id);
 }

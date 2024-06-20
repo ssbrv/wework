@@ -42,7 +42,7 @@ public class MembershipController {
 
     @GetMapping("invitations")
     private ResponseEntity<Iterable<MembershipDTO>> getInvitations() {
-        return ResponseEntity.ok(membershipService.getInvitations().stream().map(MembershipDTO::new).collect(Collectors.toList()));
+        return ResponseEntity.ok(membershipService.getInvitations().stream().map(membership -> new MembershipDTO(membership, membershipService.countEnabledMembershipsByProjectId(membership.getProject().getId()))).collect(Collectors.toList()));
     }
 
     @GetMapping("{membershipId}")

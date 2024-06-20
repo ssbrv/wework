@@ -264,4 +264,9 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
 
         membership.setRole(role);
     }
+
+    @Override
+    public Integer countEnabledMembershipsByProjectId(Long id) {
+        return projectRepository.countEnabledMembershipsById(id);
+    }
 }
