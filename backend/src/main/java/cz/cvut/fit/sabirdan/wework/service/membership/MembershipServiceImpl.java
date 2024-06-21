@@ -3,7 +3,8 @@ package cz.cvut.fit.sabirdan.wework.service.membership;
 import cz.cvut.fit.sabirdan.wework.domain.Membership;
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
-import cz.cvut.fit.sabirdan.wework.domain.role.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
@@ -58,8 +59,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         if (project.getStatus() != ProjectStatus.ENABLED)
             throw new BadRequestException("You cannot invite people to a closed project");
 
-        MemberRole role = memberRoleService.findByName(inviteRequest.getRoleName())
-                .orElseThrow(() -> new NotFoundException("roleName", "Role does not exist. Please, contact tech support"));
+        MemberRole role = memberRoleService.findByName(inviteRequest.getRoleName());
 
         User user = userService.getByUsername(inviteRequest.getUsername());
 
@@ -152,14 +152,16 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
 
             membership.kick();
 
-            if (!membership.getRole().getId().equals(memberRoleService.getOwnerMemberRole().getId()))
+            MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
+
+            if (!membership.getRole().getId().equals(ownerRole.getId()))
                 return;
 
-            // If it was a role of owner, then grant owner's role to a random member
+            // grant owner's role to a random member so that project always has an owner
             memberships.stream()
                     .filter(m -> !Objects.equals(m.getId(), membership.getId()))
                     .findAny()
-                    .ifPresent(m -> m.setRole(memberRoleService.getOwnerMemberRole()));
+                    .ifPresent(m -> m.setRole(memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name())));
 
             return;
         }
@@ -187,14 +189,16 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
 
             membership.leave();
 
-            if (!membership.getRole().getId().equals(memberRoleService.getOwnerMemberRole().getId()))
+            MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
+
+            if (!membership.getRole().getId().equals(ownerRole.getId()))
                 return;
 
             // If it was a role of owner, then grant owner's role to a random member
             memberships.stream()
                     .filter(m -> !Objects.equals(m.getId(), membership.getId()))
                     .findAny()
-                    .ifPresent(m -> m.setRole(memberRoleService.getOwnerMemberRole()));
+                    .ifPresent(m -> m.setRole(ownerRole));
 
             return;
         }
@@ -225,8 +229,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         User user = membership.getMember();
 
-        MemberRole role = memberRoleService.findByName(changeMemberRoleRequest.getRoleName())
-                .orElseThrow(() -> new NotFoundException("roleName", "Role does not exist"));
+        MemberRole role = memberRoleService.findByName(changeMemberRoleRequest.getRoleName());
 
         Optional<Membership> optionalEditorMembership = findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
 

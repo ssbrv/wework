@@ -1,6 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.service.user;
 
 import cz.cvut.fit.sabirdan.wework.domain.User;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultSystemRole;
 import cz.cvut.fit.sabirdan.wework.http.request.AuthenticationRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangePasswordRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.LogoutRequest;
@@ -33,10 +34,9 @@ public class AuthenticationService {
                 registerRequest.getUsername(),
                 passwordEncoder.encode(registerRequest.getPassword()),
                 registerRequest.getFirstName(),
-                registerRequest.getLastName()
+                registerRequest.getLastName(),
+                systemRoleService.findDefaultByName(DefaultSystemRole.USER.name())
         );
-
-        user.setRole(systemRoleService.getUserSystemRole());
 
         user = userService.save(user);
         String jwtToken = jwtService.generateJwtToken(user);

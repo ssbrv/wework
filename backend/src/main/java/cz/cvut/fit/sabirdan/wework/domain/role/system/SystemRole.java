@@ -1,7 +1,8 @@
-package cz.cvut.fit.sabirdan.wework.domain.role;
+package cz.cvut.fit.sabirdan.wework.domain.role.system;
 
-import cz.cvut.fit.sabirdan.wework.domain.Membership;
+import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.role.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -14,9 +15,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "member_roles")
-public class MemberRole extends Role<Membership> {
-    public MemberRole(String name, Set<Authorization> authorizations, int power) {
+@Table(name = "system_roles")
+public class SystemRole extends Role<User> {
+    public SystemRole(String name, Set<Authorization> authorizations, int power) {
         super(name, authorizations, power);
     }
 }

@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.domain.role.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
 import jakarta.persistence.*;

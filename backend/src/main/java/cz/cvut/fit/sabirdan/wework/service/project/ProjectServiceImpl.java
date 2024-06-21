@@ -4,6 +4,7 @@ import cz.cvut.fit.sabirdan.wework.domain.Membership;
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
@@ -54,12 +55,10 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     public CreateProjectResponse createProject(CreateUpdateProjectRequest createProjectRequest) {
         User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // create and save the project
         Project project = new Project(createProjectRequest.getName(), createProjectRequest.getDescription());
         Project savedProject = projectRepository.save(project);
 
-        // create and save membership
-        Membership membership = new Membership(user, project, memberRoleService.getOwnerMemberRole());
+        Membership membership = new Membership(user, project, memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name()));
         savedProject.getMemberships().add(membership);
 
         return CreateProjectResponse.builder().id(savedProject.getId()).build();
@@ -188,7 +187,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     @Override
     public void deleteProject(Long projectId) {
         User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        Project project = getProjectById(projectId); // this ensures authorizations
+        getProjectById(projectId); // this ensures authorizations
 
         if (user.isAuthorized(Authorization.SYSTEM_DELETE_PROJECT)) {
             deleteById(projectId);

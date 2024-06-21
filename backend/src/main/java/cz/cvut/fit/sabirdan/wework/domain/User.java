@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.domain.role.SystemRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.system.SystemRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Sex;
 import jakarta.persistence.*;
@@ -54,22 +54,22 @@ public class User extends EntityWithIdLong implements UserDetails {
     @ManyToMany(mappedBy = "assignees")
     private Set<Task> assignedTasks = new HashSet<>();
 
-    // status of the user
     @Column(nullable = false)
     private boolean enabled = true;
 
     @Column(nullable = false)
     private boolean locked = false;
 
-    // default user registration
     public User(String username,
                 String password,
                 String firstName,
-                String lastName) {
+                String lastName,
+                SystemRole role) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.role = role;
     }
 
     @Override

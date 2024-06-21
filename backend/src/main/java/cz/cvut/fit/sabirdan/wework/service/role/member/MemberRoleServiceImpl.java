@@ -1,11 +1,13 @@
 package cz.cvut.fit.sabirdan.wework.service.role.member;
 
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.role.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.system.SystemRole;
+import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.repository.role.MemberRoleRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +17,21 @@ import java.util.Optional;
 
 @Service
 public class MemberRoleServiceImpl extends CrudServiceImpl<MemberRole> implements MemberRoleService {
-    @Value("${application.member-role.owner.name}")
-    private String ownerMemberRoleName;
-    @Value("${application.member-role.member.name}")
-    private String memberMemberRoleName;
-    @Value("${application.member-role.admin.name}")
-    private String adminMemberRoleName;
-
     private final MemberRoleRepository memberRoleRepository;
 
     @Autowired
     public MemberRoleServiceImpl(MemberRoleRepository memberRoleRepository) {
         this.memberRoleRepository = memberRoleRepository;
+    }
+
+    @Override
+    public MemberRole findByName(String name) {
+        return memberRoleRepository.findByName(name).orElseThrow(() -> new NotFoundException("roleName", "Role " + name + " does not exist"));
+    }
+
+    @Override
+    public MemberRole findDefaultByName(String name) {
+        return memberRoleRepository.findByName(name).orElseThrow(() -> new RuntimeException("Role " + name + " was not initialized. Contact tech support"));
     }
 
     @Override
@@ -40,44 +45,21 @@ public class MemberRoleServiceImpl extends CrudServiceImpl<MemberRole> implement
     }
 
     @Override
-    public MemberRole getOwnerMemberRole() {
-        return memberRoleRepository.findByName(ownerMemberRoleName)
-                .orElseThrow(() -> new RuntimeException("The member role was not initialized properly. Please, contact the tech support"));
-    }
-
-    @Override
-    public MemberRole getAdminMemberRole() {
-        return memberRoleRepository.findByName(adminMemberRoleName)
-                .orElseThrow(() -> new RuntimeException("The member role was not initialized properly. Please, contact the tech support"));
-    }
-
-    @Override
-    public MemberRole getMemberMemberRole() {
-        return memberRoleRepository.findByName(memberMemberRoleName)
-                .orElseThrow(() -> new RuntimeException("The member role was not initialized properly. Please, contact the tech support"));
-    }
-
-    @Override
     public void initializeMemberRoles() {
         List<MemberRole> initList = new ArrayList<>();
-        MemberRole ownerMemberRole = new MemberRole(ownerMemberRoleName, Authorization.getAllMemberAuthorizations(), 90);
-        MemberRole adminMemberRole = new MemberRole(adminMemberRoleName, Authorization.getAdminMemberRoleAuthorizations(), 60);
-        MemberRole memberMemberRole = new MemberRole(memberMemberRoleName, Authorization.getMemberMemberRoleAuthorizations(), 10);
+        MemberRole ownerMemberRole = new MemberRole(DefaultMemberRole.OWNER.name(), Authorization.getAllMemberAuthorizations(), 90);
+        MemberRole adminMemberRole = new MemberRole(DefaultMemberRole.ADMIN.name(), Authorization.getAdminMemberRoleAuthorizations(), 60);
+        MemberRole memberMemberRole = new MemberRole(DefaultMemberRole.MEMBER.name(), Authorization.getMemberMemberRoleAuthorizations(), 10);
 
-        if (!memberRoleRepository.existsByName(ownerMemberRoleName))
+        if (!memberRoleRepository.existsByName(DefaultMemberRole.OWNER.name()))
             initList.add(ownerMemberRole);
 
-        if (!memberRoleRepository.existsByName(adminMemberRoleName))
+        if (!memberRoleRepository.existsByName(DefaultMemberRole.ADMIN.name()))
             initList.add(adminMemberRole);
 
-        if (!memberRoleRepository.existsByName(memberMemberRoleName))
+        if (!memberRoleRepository.existsByName(DefaultMemberRole.MEMBER.name()))
             initList.add(memberMemberRole);
 
         memberRoleRepository.saveAll(initList);
-    }
-
-    @Override
-    public Optional<MemberRole> findByName(String name) {
-        return memberRoleRepository.findByName(name);
     }
 }
