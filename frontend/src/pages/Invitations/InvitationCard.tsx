@@ -1,11 +1,16 @@
-import { Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Menu, Text, Tooltip } from "@mantine/core";
 import { Membership } from "../../domain/Membership";
 import {
+  ArrowForwardUp,
   CalendarTime,
   Check,
+  CircleOff,
+  DotsVertical,
   User,
   UserCircle,
+  UserOff,
   Users,
+  Writing,
   X,
 } from "tabler-icons-react";
 import { KeyedMutator } from "swr";
@@ -51,7 +56,7 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
   );
 
   return (
-    <div className="card p-m h-[452px] flex flex-col gap-s">
+    <div className="card p-m flex flex-col gap-s">
       <div className="flex justify-between gap-xs">
         <Tooltip
           label="Project name"
@@ -63,10 +68,11 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
         >
           <div className="font-bold fnt-md">{invitation.project.name}</div>
         </Tooltip>
+
         <Tooltip
           label="Number of members"
-          position="bottom"
-          offset={{ mainAxis: 10, crossAxis: -40 }}
+          position="left"
+          offset={10}
           withArrow
           arrowSize={8}
           arrowRadius={4}
@@ -78,19 +84,39 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
         </Tooltip>
       </div>
 
-      <Tooltip
-        label="Your entry role"
-        position="top"
-        offset={{ mainAxis: 10, crossAxis: 40 }}
-        withArrow
-        arrowSize={8}
-        arrowRadius={4}
-      >
-        <div className="flex gap-s items-center hover:bg-hover rounded hover:cursor-pointer p-xs transition-all duration-100 ease-linear">
-          <UserCircle className="size-l" />
-          <div>{invitation.role.name}</div>
-        </div>
-      </Tooltip>
+      {invitation.project.description && (
+        <Tooltip
+          label="Project description"
+          position="top"
+          offset={{ mainAxis: 10, crossAxis: 50 }}
+          withArrow
+          arrowSize={8}
+          arrowRadius={4}
+        >
+          <div className="flex gap-s p-xs">
+            <Writing className="size-l flex-shrink-0" />
+            <Text lineClamp={6} className="whitespace-pre text-wrap">
+              {invitation.project.description}
+            </Text>
+          </div>
+        </Tooltip>
+      )}
+
+      <div className="flex">
+        <Tooltip
+          label="Your entry role"
+          position="right"
+          offset={10}
+          withArrow
+          arrowSize={8}
+          arrowRadius={4}
+        >
+          <div className="flex gap-s items-center p-xs">
+            <UserCircle className="size-l flex-shrink-0" />
+            <div>{invitation.role.name}</div>
+          </div>
+        </Tooltip>
+      </div>
 
       <Tooltip
         label="Go to inviter's profile"
@@ -101,29 +127,16 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
         arrowRadius={4}
       >
         <div
-          className="flex gap-s items-center hover:bg-hover rounded hover:cursor-pointer p-xs transition-all duration-100 ease-linear"
-          onClick={() => navigate(`/users/${invitation.member.id}/profile`)}
+          className="flex gap-s items-center hover:bg-hover rounded hover:cursor-pointer p-xs transition-all duration-200 ease-linear"
+          onClick={() => navigate(`/users/${invitation.inviter?.id}/profile`)}
         >
-          <User className="size-l" onClick={() => {}} />
+          <User className="size-l flex-shrink-0" />
 
           <div>{invitation.inviter?.username}</div>
         </div>
       </Tooltip>
 
-      <Tooltip
-        label="Project description"
-        position="top"
-        offset={{ mainAxis: 10, crossAxis: 50 }}
-        withArrow
-        arrowSize={8}
-        arrowRadius={4}
-      >
-        <Text lineClamp={6} className="whitespace-pre text-wrap">
-          {invitation.project.description}
-        </Text>
-      </Tooltip>
-
-      <div className="flex gap-xs items-center">
+      <div className="flex gap-md items-center mt-auto justify-between">
         <Tooltip
           label="Invited at"
           position="top"
@@ -133,22 +146,23 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
           arrowRadius={4}
         >
           <div className="flex gap-s items-center pl-xs">
-            <CalendarTime className="size-l" />
+            <CalendarTime className="size-l flex-shrink-0" />
             <div>{formatDate(new Date(invitation.createdAt))}</div>
           </div>
         </Tooltip>
-        <div className="flex gap-s ml-auto">
+
+        <div className="flex gap-s items-center">
           <Tooltip
             label="Accept"
             position="top"
-            offset={0}
+            offset={10}
             withArrow
             arrowSize={8}
             arrowRadius={4}
           >
             <div>
               <Check
-                className="size-md text-secondary hover:text-attract hover:cursor-pointer"
+                className="size-l text-secondary hover:text-attract transition-all duration-200 ease-linear"
                 onClick={() => {
                   setValue("status", "ENABLED");
                   changeMembershipStatusRequest();
@@ -159,19 +173,46 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
           <Tooltip
             label="Reject"
             position="top"
-            offset={0}
+            offset={10}
             withArrow
             arrowSize={8}
             arrowRadius={4}
           >
             <div>
               <X
-                className="size-md text-secondary hover:text-danger hover:cursor-pointer"
+                className="size-l text-secondary hover:text-danger transition-all duration-200 ease-linear"
                 onClick={() => {
                   setValue("status", "REJECTED");
                   changeMembershipStatusRequest();
                 }}
               />
+            </div>
+          </Tooltip>
+          <Tooltip
+            label="Menu"
+            position="top"
+            offset={10}
+            withArrow
+            arrowSize={8}
+            arrowRadius={4}
+          >
+            <div>
+              <Menu radius="md" withArrow position="top" shadow="md">
+                <Menu.Target>
+                  <ActionIcon className="bg-primary hover:bg-primary text-secondary hover:text-action transition-all duration-200 ease-linear">
+                    <DotsVertical />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item leftSection={<ArrowForwardUp />}>
+                    See project
+                  </Menu.Item>
+                  <Menu.Item leftSection={<UserOff />}>Block inviter</Menu.Item>
+                  <Menu.Item leftSection={<CircleOff />}>
+                    Block project
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
             </div>
           </Tooltip>
         </div>

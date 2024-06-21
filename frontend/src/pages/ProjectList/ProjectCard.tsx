@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { Project } from "../../domain/Project";
-import { Users } from "tabler-icons-react";
+import { Users, Writing } from "tabler-icons-react";
 
 interface Props {
   project: Project;
@@ -12,7 +12,7 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
 
   return (
     <div
-      className="card p-m h-[235px] hover:bg-hover hover:cursor-pointer transition-all ease-linear duration-200 flex flex-col gap-s"
+      className="card p-m hover:bg-hover hover:cursor-pointer transition-all ease-linear duration-200 flex flex-col gap-s"
       onClick={() => {
         navigate(`/projects/${project.id}/details`);
       }}
@@ -24,9 +24,12 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
           <Users />
         </div>
       </div>
-      <Text lineClamp={6} className="whitespace-pre text-wrap">
-        {project.description}
-      </Text>
+      <div className="flex gap-s p-xs">
+        <Writing className="size-l flex-shrink-0" />
+        <Text lineClamp={6} className="whitespace-pre text-wrap">
+          {project.description}
+        </Text>
+      </div>
     </div>
   );
 };
