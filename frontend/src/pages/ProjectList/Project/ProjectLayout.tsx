@@ -7,28 +7,28 @@ import { Album, Checkbox, Settings, UserPlus, Users } from "tabler-icons-react";
 
 const tabs: TabsBarTab[] = [
   {
-    name: "Details",
     link: "details",
+    name: "Details",
     icon: <Album />,
   },
   {
-    name: "Tasks",
     link: "tasks",
+    name: "Tasks",
     icon: <Checkbox />,
   },
   {
-    name: "Members",
     link: "members",
+    name: "Members",
     icon: <Users />,
   },
   {
-    name: "Invititaions",
     link: "invitations",
+    name: "Invitations",
     icon: <UserPlus />,
   },
   {
-    name: "Settings",
     link: "settings",
+    name: "Settings",
     icon: <Settings />,
   },
 ];
@@ -42,7 +42,7 @@ const ProjectLayout = (): JSX.Element => {
       <Header
         name={project?.name}
         controls={[
-          <TabsBar defaultTabName="Details" tabs={tabs} />,
+          <TabsBar tabs={tabs} linkLevel={3} />,
           <Tooltip
             label="Go back to project list"
             position="bottom"
