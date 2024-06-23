@@ -33,7 +33,7 @@ const BasicInformation = (): JSX.Element => {
   }
 
   useEffect(() => {
-    resetForm();
+    reset(user);
   }, [user]);
 
   const handleEdit = handleSubmit(
@@ -118,7 +118,7 @@ const BasicInformation = (): JSX.Element => {
             size="md"
             variant="outline"
             onClick={() => {
-              resetForm();
+              reset(user);
               unpressEdit();
             }}
           >
