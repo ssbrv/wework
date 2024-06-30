@@ -25,8 +25,8 @@ Or manually:
 4. cd ../backend
 5. mvn spring-boot:run
 
-# How to aceess databse
+# How to access databse
 
-Change in the following screept it of your docker container and run:
+Change in the following script id of your docker container and run:
 
 - ./run-docker-shell.sh
