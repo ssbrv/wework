@@ -1,7 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.http.response.task;
 
 import cz.cvut.fit.sabirdan.wework.domain.Task;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.TaskStatus;
+import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.project.ProjectDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.user.SafeUserDTO;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Builder
 public class TaskDTO {
     private Long id;
-    private TaskStatus status;
+    private StatusDTO status;
     private String summary;
     private String description;
     private ProjectDTO project;
@@ -29,7 +29,7 @@ public class TaskDTO {
     public TaskDTO(Task task) {
         this(
                 task.getId(),
-                task.getStatus(),
+                new StatusDTO(task.getStatus()),
                 task.getSummary(),
                 task.getDescription(),
                 new ProjectDTO(task.getProject()),

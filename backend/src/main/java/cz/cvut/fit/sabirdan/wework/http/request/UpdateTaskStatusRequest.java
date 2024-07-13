@@ -1,7 +1,5 @@
 package cz.cvut.fit.sabirdan.wework.http.request;
 
-
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateTaskStatusRequest {
-    TaskStatus status;
+    private Long statusId;
 }

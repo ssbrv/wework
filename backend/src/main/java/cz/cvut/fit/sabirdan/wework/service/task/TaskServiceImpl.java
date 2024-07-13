@@ -7,6 +7,7 @@ import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.status.task.TaskStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.exception.UnauthorizedException;
@@ -18,6 +19,7 @@ import cz.cvut.fit.sabirdan.wework.repository.TaskRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import cz.cvut.fit.sabirdan.wework.service.membership.MembershipService;
 import cz.cvut.fit.sabirdan.wework.service.project.ProjectService;
+import cz.cvut.fit.sabirdan.wework.service.status.task.TaskStatusService;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,6 +40,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
     private final UserService userService;
     private final ProjectService projectService;
     private final MembershipService membershipService;
+    private final TaskStatusService taskStatusService;
 
     @Override
     public JpaRepository<Task, Long> getRepository() {
@@ -102,7 +105,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         if (!hasMemberAuthority && !hasSystemAuthority)
             throw new UnauthorizedException("You are not authorized to create tasks in this project");
 
-        Task task = new Task(createTaskRequest.getSummary(), createTaskRequest.getDescription(), project, author);
+        Task task = new Task(createTaskRequest.getSummary(), createTaskRequest.getDescription(), project, author, taskStatusService.getByValue(TaskStatus.DEFAULT_STATUS_VALUE_TODO));
         return new CreateTaskResponse(save(task).getId());
     }
 
@@ -194,7 +197,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         if (!hasMemberAuthority && !hasSystemAuthority)
             throw new UnauthorizedException("You are not authorized to edit tasks in this project");
 
-        task.setStatus(updateTaskStatusRequest.getStatus());
+        task.setStatus(taskStatusService.getById(updateTaskStatusRequest.getStatusId()));
     }
 
     @Override

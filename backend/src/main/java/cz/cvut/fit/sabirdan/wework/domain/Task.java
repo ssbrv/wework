@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.TaskStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.task.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name = "tasks")
 public class Task extends EntityWithIdLong{
-    @Column
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status = TaskStatus.TODO;
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private TaskStatus status;
 
     @Column(nullable = false)
     private String summary;
@@ -39,10 +39,11 @@ public class Task extends EntityWithIdLong{
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> assignees = new HashSet<>();
 
-    public Task(String summary, String description, Project project, User author) {
+    public Task(String summary, String description, Project project, User author, TaskStatus status) {
         this.summary = summary;
         this.description = description;
         this.project = project;
         this.author = author;
+        this.status = status;
     }
 }
