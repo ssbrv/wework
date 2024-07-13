@@ -36,6 +36,8 @@ interface ListProps {
   displayAttributes?: DisplayAttribute[];
   onItemClick?: (itemList: ItemList) => void;
   wrapInCard?: boolean;
+  withSearchBar?: boolean;
+  withFirstDivider?: boolean;
 }
 
 export const List = ({
@@ -47,12 +49,16 @@ export const List = ({
   displayAttributes = [],
   onItemClick,
   wrapInCard = true,
+  withSearchBar = true,
+  withFirstDivider = true,
 }: ListProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredList = list?.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredList = withSearchBar
+    ? list?.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : list;
 
   function chunk<T>(array: T[], size: number): T[][] {
     if (!array.length) {
@@ -123,40 +129,45 @@ export const List = ({
 
   return (
     <div className={`flex flex-col gap-m ${wrapInCard && "p-m card"}`}>
-      <div className="flex gap-m justify-between items-center">
-        <div className="font-bold fnt-md">{title}</div>
-        <div className="flex gap-m items-center">
-          <Tooltip
-            key="tooltip"
-            label="Remove filter"
-            position="bottom"
-            offset={10}
-            withArrow
-            arrowSize={8}
-            arrowRadius={4}
-          >
-            <CloseButton
-              onClick={() => {
-                setSearchTerm("");
-              }}
-            />
-          </Tooltip>
-          <TextInput
-            key="search"
-            size="md"
-            radius="md"
-            placeholder="Search by name"
-            leftSection={<Search />}
-            variant="filled"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.currentTarget.value)}
-          />
-          {controls}
+      {(withSearchBar || title !== "") && (
+        <div className="flex gap-m justify-between items-center">
+          <div className="font-bold fnt-md">{title}</div>
+          <div className="flex gap-m items-center">
+            {withSearchBar && (
+              <div className="flex gap-m items-center">
+                <Tooltip
+                  key="tooltip"
+                  label="Remove filter"
+                  position="bottom"
+                  offset={10}
+                  withArrow
+                  arrowSize={8}
+                  arrowRadius={4}
+                >
+                  <CloseButton
+                    onClick={() => {
+                      setSearchTerm("");
+                    }}
+                  />
+                </Tooltip>
+                <TextInput
+                  key="search"
+                  size="md"
+                  radius="md"
+                  placeholder="Search by name"
+                  leftSection={<Search />}
+                  variant="filled"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.currentTarget.value)}
+                />
+              </div>
+            )}
+            {controls}
+          </div>
         </div>
-      </div>
-
+      )}
       <div>
-        <Divider />
+        {withFirstDivider && <Divider />}
         {filteredAndChunkedContent}
       </div>
 

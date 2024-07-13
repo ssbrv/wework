@@ -40,8 +40,14 @@ const ProjectProvider = (): JSX.Element => {
     data: tasks,
     error: errorTasks,
     mutate: mutateTasks,
-    isLoading: isLoadingTasks,
   } = useSWR<Task[]>(`tasks/projects/${projectId}`, getFetcher);
+
+  if (error) {
+    console.log(
+      "The exception was caught while fetching data from projects/projectId/tasks"
+    );
+    handleException(errorTasks, undefined, true);
+  }
 
   const contextValue = useMemo(
     () => ({ tasks, project, mutate, mutateTasks }),

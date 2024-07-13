@@ -42,7 +42,7 @@ const ProjectLayout = (): JSX.Element => {
       <Header
         name={project?.name}
         controls={[
-          <TabsBar tabs={tabs} linkLevel={3} />,
+          <TabsBar tabs={tabs} linkLevel={3} defaultTab="details" />,
           <Tooltip
             label="Go back to project list"
             position="bottom"

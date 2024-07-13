@@ -14,7 +14,7 @@ import ProjectList from "./pages/ProjectList/ProjectList";
 import ProjectDetails from "./pages/ProjectList/Project/ProjectDetails/ProjectDetails";
 import ProjectProvider from "./hooks/ProjectProvider";
 import ProjectLayout from "./pages/ProjectList/Project/ProjectLayout";
-import ProjectTasks from "./pages/ProjectList/Project/ProjectTasks/ProjectTasks";
+import ProjectTasksLayout from "./pages/ProjectList/Project/ProjectTasks/ProjectTasksLayout";
 import ProjectMembers from "./pages/ProjectList/Project/ProjectMembers/ProjectMembers";
 import ProjectSettings from "./pages/ProjectList/Project/ProjectSettings/ProjectSettings";
 import ProjectInvitations from "./pages/ProjectList/Project/ProjectInvitations/ProjectInvitations";
@@ -25,6 +25,8 @@ import ProjectInvitation from "./pages/ProjectList/Project/ProjectInvitations/Pr
 import TaskList from "./pages/TaskList/TaskList";
 import TaskProvider from "./hooks/TaskProvider";
 import ProjectTask from "./pages/ProjectList/Project/ProjectTasks/ProjectTask.tsx/ProjectTask";
+import ProjectTasksListView from "./pages/ProjectList/Project/ProjectTasks/ProjectTasksListView/ProjectTasksListView";
+import ProjectTasksBoardView from "./pages/ProjectList/Project/ProjectTasks/ProjectTasksBoardView/ProjectTasksBoardView";
 
 export const Router = (): JSX.Element => {
   return (
@@ -50,7 +52,16 @@ export const Router = (): JSX.Element => {
                     <Route path="" element={<ProjectLayout />}>
                       <Route path="details" element={<ProjectDetails />} />
                       <Route path="tasks">
-                        <Route path="" element={<ProjectTasks />} />
+                        <Route path="" element={<ProjectTasksLayout />}>
+                          <Route
+                            path="list"
+                            element={<ProjectTasksListView />}
+                          />
+                          <Route
+                            path="board"
+                            element={<ProjectTasksBoardView />}
+                          />
+                        </Route>
                         <Route path=":taskId" element={<TaskProvider />}>
                           <Route path="" element={<ProjectTask />} />
                         </Route>

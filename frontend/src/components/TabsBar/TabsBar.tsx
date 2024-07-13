@@ -1,5 +1,5 @@
 import { Tabs } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export interface TabsBarTab {
@@ -11,15 +11,33 @@ export interface TabsBarTab {
 interface TabsBarProps {
   tabs: TabsBarTab[];
   linkLevel: number;
+  defaultTab?: string;
 }
 
-export const TabsBar = ({ tabs, linkLevel }: TabsBarProps): JSX.Element => {
+export const TabsBar = ({
+  tabs,
+  linkLevel,
+  defaultTab = "",
+}: TabsBarProps): JSX.Element => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [selectedTab, setSelectedTab] = useState<string>(
-    location.pathname.split("/")[linkLevel]
-  );
-  console.log(selectedTab);
+  let path = useLocation().pathname.split("/");
+
+  const [selectedTab, setSelectedTab] = useState<string>(() => {
+    if (path.length === linkLevel) return defaultTab;
+    if (path.length > linkLevel) return path[linkLevel];
+    throw new Error(
+      "TabsBar component was not properly used: provided path " +
+        path +
+        " is shorter than linkLevel of " +
+        linkLevel
+    );
+  });
+
+  useEffect(() => {
+    if (path[linkLevel] === selectedTab) return;
+    navigate(`./${selectedTab}`);
+  }, [selectedTab, path, linkLevel, navigate]);
+
   return (
     <Tabs defaultValue={selectedTab} activateTabWithKeyboard={false}>
       <Tabs.List>
@@ -30,7 +48,6 @@ export const TabsBar = ({ tabs, linkLevel }: TabsBarProps): JSX.Element => {
             leftSection={tab.icon}
             onClick={() => {
               setSelectedTab(tab.link);
-              navigate(`./${tab.link}`);
             }}
           >
             {tab.name}

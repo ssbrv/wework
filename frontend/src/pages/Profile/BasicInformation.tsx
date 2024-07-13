@@ -23,15 +23,6 @@ const BasicInformation = (): JSX.Element => {
     reset,
   } = useForm<UpdateUserRequest>();
 
-  function resetForm(): void {
-    reset({
-      username: user?.username,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      sex: user?.sex,
-    });
-  }
-
   useEffect(() => {
     reset(user);
   }, [user]);

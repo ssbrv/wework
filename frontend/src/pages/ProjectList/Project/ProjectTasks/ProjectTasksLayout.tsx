@@ -1,39 +1,48 @@
 import { Button, Modal } from "@mantine/core";
-import { List } from "../../../../components/List/List";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { DragDrop, List as IconList } from "tabler-icons-react";
 import { useDisclosure } from "@mantine/hooks";
-import { SrcollUpAffix } from "../../../../components/Affix/ScrollUpAffix";
 import CreateTaskForm from "./CreateTaskForm";
-import { useNavigate } from "react-router-dom";
+import { TabsBar, TabsBarTab } from "../../../../components/TabsBar/TabsBar";
+import { Header } from "../../../../components/Header/Header";
+import { Outlet } from "react-router-dom";
+import { useProject } from "../../../../hooks/ProjectProvider";
 
-const ProjectTasks = (): JSX.Element => {
-  const navigate = useNavigate();
-  const { tasks, mutateTasks } = useProject();
+const tabs: TabsBarTab[] = [
+  {
+    link: "list",
+    name: "List view",
+    icon: <IconList />,
+  },
+  {
+    link: "board",
+    name: "Board view",
+    icon: <DragDrop />,
+  },
+];
+
+const ProjectTasksLayout = (): JSX.Element => {
   const [createTaskOpened, { open: openCreateTask, close: closeCreateTask }] =
     useDisclosure(false);
 
-  const transformedTasks = tasks?.map((task) => ({
-    id: task.id,
-    name: task.summary,
-  }));
+  const { mutateTasks } = useProject();
 
   return (
     <div className="flex flex-col gap-m">
-      <List
-        title="Tasks"
+      <Header
+        name="Tasks"
         controls={[
+          <TabsBar tabs={tabs} linkLevel={4} defaultTab="list" />,
           <Button
             size="md"
             radius="md"
             className="btn-action"
             onClick={openCreateTask}
           >
-            Create task
+            New task
           </Button>,
         ]}
-        list={transformedTasks}
-        onItemClick={(item) => navigate(`${item.id}`)}
       />
+      <Outlet />
       <Modal
         onClose={() => {
           closeCreateTask();
@@ -52,9 +61,8 @@ const ProjectTasks = (): JSX.Element => {
           }}
         />
       </Modal>
-      <SrcollUpAffix />
     </div>
   );
 };
 
-export default ProjectTasks;
+export default ProjectTasksLayout;

@@ -1,6 +1,5 @@
 import {
   Button,
-  CloseButton,
   Modal,
   NativeSelect,
   Textarea,
@@ -21,12 +20,12 @@ import { ChangeTaskStatusRequest } from "../../../../../http/request/ChangeTaskS
 import { List } from "../../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { AddAssigneeForm } from "./AddAssigneeForm";
+import { ArrowBackUp, UserMinus } from "tabler-icons-react";
 import { useProject } from "../../../../../hooks/ProjectProvider";
-import { UserMinus } from "tabler-icons-react";
 
 const ProjectTask = (): JSX.Element => {
   const navigate = useNavigate();
-  const { mutate: mutateProject, mutateTasks } = useProject();
+  const { mutateTasks } = useProject();
   const { task, mutate: mutateTask } = useTask();
   const [charCount, setCharCount] = useState(task?.description?.length);
   const [editPressed, { open: pressEdit, close: unpressEdit }] =
@@ -58,12 +57,12 @@ const ProjectTask = (): JSX.Element => {
       summary: task?.summary,
       description: task?.description,
     });
+    setCharCount(task?.description?.length);
   }
 
   useEffect(() => {
-    statusReset({ status: task?.status });
     resetForm();
-    setCharCount(task?.description?.length);
+    statusReset({ status: task?.status });
   }, [task]);
 
   const handleEdit = handleSubmit(
@@ -73,6 +72,7 @@ const ProjectTask = (): JSX.Element => {
         .then(function () {
           goodNotification("Task was edited successfully!");
           mutateTask();
+          mutateTasks();
           unpressEdit();
         })
         .catch(function (exception) {
@@ -93,8 +93,8 @@ const ProjectTask = (): JSX.Element => {
         .put(`tasks/${task?.id}/status`, changeTaskStatusRequest)
         .then(function () {
           goodNotification("Task status was saved!");
-          mutateProject();
           mutateTask();
+          mutateTasks();
         })
         .catch(function (exception) {
           handleException(exception, setStatusError, true);
@@ -115,8 +115,6 @@ const ProjectTask = (): JSX.Element => {
       .then(function () {
         goodNotification("Task was successfully deleted!");
         navigate("../");
-        mutateProject();
-        mutateTasks();
       })
       .catch(function (exception) {
         handleException(exception, undefined, true);
@@ -134,6 +132,7 @@ const ProjectTask = (): JSX.Element => {
           "Task was unassigned from " + username + " successfully!"
         );
         mutateTask();
+        mutateTasks();
       })
       .catch(function (exception) {
         handleException(exception, undefined, true);
@@ -154,14 +153,20 @@ const ProjectTask = (): JSX.Element => {
             Delete task
           </Button>,
           <Tooltip
-            label="Go back to task list"
+            label="Go back"
             position="bottom"
             offset={10}
             withArrow
             arrowSize={8}
             arrowRadius={4}
+            openDelay={800}
           >
-            <CloseButton onClick={() => navigate("../")} />
+            <div
+              className="flex hover:text-action hover:cursor-pointer transition-all duration-200 ease-out"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackUp className="size-l" />
+            </div>
           </Tooltip>,
         ]}
       />
@@ -256,6 +261,11 @@ const ProjectTask = (): JSX.Element => {
               ]}
               error={statusErrors.status?.message}
               label="Task status"
+              styles={{
+                input: {
+                  borderColor: "transparent",
+                },
+              }}
             />
             <Button
               size="md"
@@ -330,6 +340,7 @@ const ProjectTask = (): JSX.Element => {
         onClose={() => {
           closeAddAssignee();
           mutateTask();
+          mutateTasks();
         }}
         opened={addAssigneeOpened}
         withCloseButton={false}
@@ -341,6 +352,7 @@ const ProjectTask = (): JSX.Element => {
           onClose={() => {
             closeAddAssignee();
             mutateTask();
+            mutateTasks();
           }}
         />
       </Modal>

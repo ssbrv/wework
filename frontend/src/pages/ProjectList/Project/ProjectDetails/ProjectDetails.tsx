@@ -29,11 +29,11 @@ const ProjectDetails = (): JSX.Element => {
       name: project?.name,
       description: project?.description,
     });
+    setCharCount(project?.description?.length);
   }
 
   useEffect(() => {
     resetForm();
-    setCharCount(project?.description?.length);
   }, [project]);
 
   const handleEdit = handleSubmit(

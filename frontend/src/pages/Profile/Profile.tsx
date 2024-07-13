@@ -1,5 +1,5 @@
 import { Header } from "../../components/Header/Header";
-import { Button, Group, Modal } from "@mantine/core";
+import { Button, Group, Modal, Tooltip } from "@mantine/core";
 import { ButtonBar } from "../../components/ButtonBar/ButtonBar";
 import { useException } from "../../hooks/ExceptionProvider";
 import { useAuth } from "../../hooks/AuthProvider";
@@ -9,6 +9,7 @@ import Credentials from "./Credentials";
 import { useDisclosure } from "@mantine/hooks";
 import { useUser } from "../../hooks/UserProvider";
 import { useNavigate } from "react-router-dom";
+import { ArrowBackUp } from "tabler-icons-react";
 
 const ProfilePage = (): JSX.Element => {
   const { handleException } = useException();
@@ -39,7 +40,27 @@ const ProfilePage = (): JSX.Element => {
 
   return (
     <div className="p-l flex flex-col gap-m">
-      <Header name={isItMe ? "My profile" : "Profile"} />
+      <Header
+        name={isItMe ? "My profile" : "Profile"}
+        controls={[
+          <Tooltip
+            label="Go back"
+            position="bottom"
+            offset={10}
+            withArrow
+            arrowSize={8}
+            arrowRadius={4}
+            openDelay={800}
+          >
+            <div
+              className="flex hover:text-action hover:cursor-pointer transition-all duration-200 ease-out"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackUp className="size-l" />
+            </div>
+          </Tooltip>,
+        ]}
+      />
 
       <div className="flex gap-m flex-wrap">
         <BasicInformation />

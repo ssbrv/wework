@@ -44,7 +44,7 @@ const ProjectMember = (): JSX.Element => {
         }
         controls={[
           <Tooltip
-            label="Go back to invitation list"
+            label="Go to members"
             position="bottom"
             offset={10}
             withArrow

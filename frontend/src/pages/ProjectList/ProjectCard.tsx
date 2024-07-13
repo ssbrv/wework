@@ -14,7 +14,7 @@ export const ProjectCard = ({ project }: Props): JSX.Element => {
     <div
       className="card p-m hover:bg-hover hover:cursor-pointer transition-all ease-linear duration-200 flex flex-col gap-s"
       onClick={() => {
-        navigate(`/projects/${project.id}/details`);
+        navigate(`/projects/${project.id}`);
       }}
     >
       <div className="flex justify-between gap-xs">
