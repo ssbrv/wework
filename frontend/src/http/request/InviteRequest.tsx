@@ -1,5 +1,6 @@
 export interface InviteRequest {
   username: string;
-  roleName: string;
+  roleValue: string;
+  roleName: string; // not for api
   projectId: number;
 }

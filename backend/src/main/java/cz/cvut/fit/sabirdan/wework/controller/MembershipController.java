@@ -1,16 +1,13 @@
 package cz.cvut.fit.sabirdan.wework.controller;
 
 import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
-import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangeMemberRoleRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangeMembershipStatusRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.InviteRequest;
-import cz.cvut.fit.sabirdan.wework.http.request.LeaveRequest;
 import cz.cvut.fit.sabirdan.wework.http.response.InviteResponse;
 import cz.cvut.fit.sabirdan.wework.http.response.membership.MembershipDTO;
 import cz.cvut.fit.sabirdan.wework.service.membership.MembershipService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

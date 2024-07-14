@@ -34,6 +34,7 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
     formState: { errors },
     setValue,
     clearErrors,
+    watch,
   } = useForm<ChangeRoleRequest>();
 
   const changeRole = handleSubmit(
@@ -65,6 +66,7 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
             itemsPerPage={5}
             wrapInCard={false}
             onItemClick={(role) => {
+              setValue("roleValue", role.value);
               setValue("roleName", role.name);
               clearErrors();
               nextStep();
@@ -105,7 +107,7 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
                   borderColor: "transparent",
                 },
               }}
-              error={errors.roleName?.message}
+              error={errors.roleValue?.message}
             />
           </div>
         </Stepper.Step>

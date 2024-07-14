@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.http.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangeMemberRoleRequest {
-    @NotNull
+    @NotBlank(message = "Please, make sure a role was properly selected")
     String roleValue;
 }

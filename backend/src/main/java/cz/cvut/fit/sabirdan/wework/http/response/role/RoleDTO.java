@@ -15,6 +15,7 @@ import java.util.Set;
 @Builder
 public class RoleDTO {
     private Long id;
+    private String value;
     private String name;
     private int power;
     private Set<Authorization> authorizations;
@@ -24,6 +25,7 @@ public class RoleDTO {
         this(
                 role.getId(),
                 role.getValue(),
+                role.getName(),
                 role.getPower(),
                 role.getAuthorizations(),
                 role.getDescription()

@@ -1,3 +1,4 @@
 export interface ChangeRoleRequest {
-  roleName: string;
+  roleValue: string;
+  roleName: string; // for api is not useful
 }

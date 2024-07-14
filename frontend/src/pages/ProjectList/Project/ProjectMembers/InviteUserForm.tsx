@@ -42,6 +42,7 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
     formState: { errors },
     setValue,
     clearErrors,
+    watch,
   } = useForm<InviteRequest>();
 
   const inviteUser = handleSubmit(async (inviteRequest: InviteRequest) => {
@@ -95,6 +96,7 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
             wrapInCard={false}
             onItemClick={(role) => {
               setValue("roleName", role.name);
+              setValue("roleValue", role.value);
               clearErrors();
               nextStep();
             }}
@@ -135,7 +137,7 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
                   borderColor: "transparent",
                 },
               }}
-              error={errors.roleName?.message}
+              error={errors.roleValue?.message}
             />
           </div>
         </Stepper.Completed>
