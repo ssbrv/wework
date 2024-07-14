@@ -1,9 +1,9 @@
-import { ProjectStatus } from "./enumerations/Enumerations";
+import { Status } from "./Status";
 
 export interface Project {
   id: number;
   name: string;
   description: string | null;
-  status: ProjectStatus;
+  status: Status;
   memberCount: number;
 }

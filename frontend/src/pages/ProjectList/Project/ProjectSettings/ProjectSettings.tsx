@@ -1,4 +1,4 @@
-import { Button, Group, Modal, NativeSelect } from "@mantine/core";
+import { Button, Group, Modal, Select } from "@mantine/core";
 import { ButtonBar } from "../../../../components/ButtonBar/ButtonBar";
 import { useProject } from "../../../../hooks/ProjectProvider";
 import { useDisclosure } from "@mantine/hooks";
@@ -7,13 +7,15 @@ import { useException } from "../../../../hooks/ExceptionProvider";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ChangeProjectStatusRequest } from "../../../../http/request/ChangeProjectStatusRequest";
 import { useEffect } from "react";
+import { ChangeStatusRequest } from "../../../../http/request/ChangeTaskStatusRequest";
+import useProjectStatus from "../../../../hooks/useProjectStatus";
 
 const ProjectSettings = (): JSX.Element => {
   const { project, mutate } = useProject();
   const { handleException } = useException();
   const navigate = useNavigate();
+  const { projectStatuses } = useProjectStatus();
 
   const [leaveOpened, { open: openLeave, close: closeLeave }] =
     useDisclosure(false);
@@ -24,11 +26,17 @@ const ProjectSettings = (): JSX.Element => {
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
 
-  const { register, handleSubmit, reset } =
-    useForm<ChangeProjectStatusRequest>();
+  const {
+    setError,
+    formState: { errors },
+    reset,
+    handleSubmit,
+    watch,
+    setValue,
+  } = useForm<ChangeStatusRequest>();
 
   function resetForm(): void {
-    reset({ status: project?.status });
+    reset({ statusValue: project?.status.value });
   }
 
   useEffect(() => {
@@ -70,9 +78,7 @@ const ProjectSettings = (): JSX.Element => {
   };
 
   const changeStatus = handleSubmit(
-    async (
-      changeProjectStatusRequest: ChangeProjectStatusRequest
-    ): Promise<void> => {
+    async (changeProjectStatusRequest: ChangeStatusRequest): Promise<void> => {
       await api
         .put(`/projects/${project?.id}/status`, changeProjectStatusRequest)
         .then(function () {
@@ -81,7 +87,7 @@ const ProjectSettings = (): JSX.Element => {
           mutate();
         })
         .catch(function (exception) {
-          handleException(exception, undefined, true);
+          handleException(exception, setError, true);
           closeChangeStatus();
           resetForm();
         });
@@ -163,20 +169,24 @@ const ProjectSettings = (): JSX.Element => {
       >
         <div className="flex flex-col p-s gap-m">
           <div className="fnt-md font-bold">Project status</div>
-          <NativeSelect
-            {...register("status")}
+          <Select
             size="md"
             radius="md"
             variant="filled"
-            data={[
-              { label: "Active", value: "ENABLED" },
-              { label: "Closed", value: "DISABLED" },
-            ]}
+            data={projectStatuses.map((status) => ({
+              value: status.value,
+              label: status.name,
+            }))}
             styles={{
               input: {
                 borderColor: "transparent",
               },
             }}
+            value={watch("statusValue")}
+            onChange={(value) => {
+              setValue("statusValue", value ?? "");
+            }}
+            error={errors.statusValue?.message}
           />
           <Group className="gap-m">
             <Button

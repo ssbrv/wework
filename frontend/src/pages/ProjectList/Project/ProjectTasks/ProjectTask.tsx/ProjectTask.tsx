@@ -16,7 +16,7 @@ import { useTask } from "../../../../../hooks/TaskProvider";
 import api from "../../../../../api/api";
 import { goodNotification } from "../../../../../components/Notifications/Notifications";
 import { useException } from "../../../../../hooks/ExceptionProvider";
-import { ChangeTaskStatusRequest } from "../../../../../http/request/ChangeTaskStatusRequest";
+import { ChangeStatusRequest } from "../../../../../http/request/ChangeTaskStatusRequest";
 import { List } from "../../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { AddAssigneeForm } from "./AddAssigneeForm";
@@ -53,7 +53,7 @@ const ProjectTask = (): JSX.Element => {
     handleSubmit: statusSubmit,
     watch: getStatusFormValues,
     setValue: setStatusFormValue,
-  } = useForm<ChangeTaskStatusRequest>();
+  } = useForm<ChangeStatusRequest>();
 
   function resetForm(): void {
     reset({
@@ -91,7 +91,7 @@ const ProjectTask = (): JSX.Element => {
   };
 
   const changeStatus = statusSubmit(
-    async (changeTaskStatusRequest: ChangeTaskStatusRequest) => {
+    async (changeTaskStatusRequest: ChangeStatusRequest) => {
       await api
         .put(`tasks/${task?.id}/status`, changeTaskStatusRequest)
         .then(function () {

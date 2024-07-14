@@ -1,3 +1,3 @@
-export interface ChangeTaskStatusRequest {
+export interface ChangeStatusRequest {
   statusValue: string;
 }

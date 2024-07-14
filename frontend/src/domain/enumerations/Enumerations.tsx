@@ -5,4 +5,3 @@ export type MembershipStatus =
   | "REJECTED"
   | "KICKED"
   | "LEFT";
-export type ProjectStatus = "ENABLED" | "DISABLED";
