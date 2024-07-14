@@ -6,7 +6,7 @@ import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.exception.UnauthorizedException;
@@ -19,6 +19,7 @@ import cz.cvut.fit.sabirdan.wework.repository.ProjectRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import cz.cvut.fit.sabirdan.wework.service.membership.MembershipService;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
+import cz.cvut.fit.sabirdan.wework.service.status.project.ProjectStatusService;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     private final UserService userService;
     private final MembershipService membershipService;
     private final MemberRoleService memberRoleService;
+    private final ProjectStatusService projectStatusService;
 
     @Override
     public JpaRepository<Project, Long> getRepository() {
@@ -126,7 +127,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     @Override
     public void updateProjectById(Long projectId, CreateUpdateProjectRequest updateProjectRequest) {
         Project project = getProjectById(projectId);
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new BadRequestException("You cannot edit closed project's name and description");
 
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -169,9 +170,10 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     public void changeProjectStatus(Long projectId, ChangeProjectStatusRequest changeProjectStatusRequest) {
         User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Project project = getProjectById(projectId); // this ensures authorizations
+        ProjectStatus status = projectStatusService.getByValue(changeProjectStatusRequest.getStatusValue(), "statusValue");
 
         if (user.isAuthorized(Authorization.SYSTEM_CHANGE_PROJECT_STATUS)) {
-            project.setStatus(changeProjectStatusRequest.getStatus());
+            project.setStatus(status);
             return;
         }
 
@@ -181,7 +183,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
         if (!membership.isAuthorized(Authorization.CHANGE_PROJECT_STATUS))
             throw new UnauthorizedException("You are not authorized to change project status");
 
-        project.setStatus(changeProjectStatusRequest.getStatus());
+        project.setStatus(status);
     }
 
     @Override

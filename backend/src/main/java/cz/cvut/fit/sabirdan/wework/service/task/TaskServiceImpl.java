@@ -5,8 +5,8 @@ import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.Task;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.domain.status.task.TaskStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
@@ -91,7 +91,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
     public CreateTaskResponse createTask(Long projectId, CreateUpdateTaskRequest createTaskRequest) {
         Project project = projectService.getProjectById(projectId);
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new BadRequestException("You cannot create new tasks in a closed project");
 
         User author = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -119,7 +119,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Project project = projectService.getProjectById(task.getProject().getId()); // this ensures authorities
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new UnauthorizedException("You cannot update tasks in a closed project");
 
         final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_CREATE_UPDATE_TASK);
@@ -163,7 +163,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Project project = projectService.getProjectById(task.getProject().getId()); // this ensures authorities
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new UnauthorizedException("You cannot edit tasks in a closed project");
 
         final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_CREATE_UPDATE_TASK);
@@ -186,7 +186,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Project project = projectService.getProjectById(task.getProject().getId()); // this ensures authorities
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new UnauthorizedException("You cannot edit tasks in a closed project");
 
         final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_CREATE_UPDATE_TASK);
@@ -208,7 +208,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Project project = projectService.getProjectById(task.getProject().getId()); // this ensures authorities
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new UnauthorizedException("You cannot delete tasks in a closed project");
 
         final boolean hasSystemAuthority = editor.isAuthorized(Authorization.SYSTEM_DELETE_TASK);

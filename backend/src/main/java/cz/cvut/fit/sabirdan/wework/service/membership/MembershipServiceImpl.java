@@ -7,7 +7,7 @@ import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.exception.UnauthorizedException;
@@ -56,7 +56,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         Project project = projectRepository.findById(inviteRequest.getProjectId())
                 .orElseThrow(() -> new NotFoundException("Project does not exist"));
 
-        if (project.getStatus() != ProjectStatus.ENABLED)
+        if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new BadRequestException("You cannot invite people to a closed project");
 
         MemberRole role = memberRoleService.findByName(inviteRequest.getRoleName());

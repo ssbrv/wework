@@ -2,6 +2,7 @@ package cz.cvut.fit.sabirdan.wework.http.response.project;
 
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
+import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ public class ProjectDTO {
     private Long id;
     private String name;
     private String description;
-    private ProjectStatus status;
+    private StatusDTO status;
     private Integer memberCount;
 
 
@@ -28,7 +29,7 @@ public class ProjectDTO {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
-                project.getStatus(),
+                new StatusDTO(project.getStatus()),
                 memberCount
         );
     }

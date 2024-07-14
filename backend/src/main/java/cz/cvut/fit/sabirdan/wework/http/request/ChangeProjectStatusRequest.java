@@ -1,7 +1,5 @@
 package cz.cvut.fit.sabirdan.wework.http.request;
 
-
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChangeProjectStatusRequest {
     @NotNull
-    private ProjectStatus status;
+    private String statusValue;
 }

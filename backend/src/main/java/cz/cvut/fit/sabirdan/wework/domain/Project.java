@@ -1,6 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.domain;
 
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +19,10 @@ public class Project extends EntityWithIdLong {
     private String name;
     @Column(length = 1500)
     private String description;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus status = ProjectStatus.ENABLED;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private ProjectStatus status;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();

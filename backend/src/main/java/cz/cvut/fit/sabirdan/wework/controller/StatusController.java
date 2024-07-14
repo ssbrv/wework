@@ -1,6 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.controller;
 
 import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
+import cz.cvut.fit.sabirdan.wework.service.status.project.ProjectStatusService;
 import cz.cvut.fit.sabirdan.wework.service.status.task.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StatusController {
     private final TaskStatusService taskStatusService;
+    private final ProjectStatusService projectStatusService;
 
     @GetMapping("task")
     public ResponseEntity<Iterable<StatusDTO>> getTaskStatuses() {
@@ -28,5 +30,20 @@ public class StatusController {
     @GetMapping("task/by-value/{value}")
     public ResponseEntity<StatusDTO> getTaskStatus(@PathVariable String value) {
         return ResponseEntity.ok(new StatusDTO(taskStatusService.getByValue(value)));
+    }
+
+    @GetMapping("project")
+    public ResponseEntity<Iterable<StatusDTO>> getProjectStatuses() {
+        return ResponseEntity.ok(projectStatusService.findAll().stream().map(StatusDTO::new).collect(Collectors.toList()));
+    }
+
+    @GetMapping("project/{id}")
+    public ResponseEntity<StatusDTO> getProjectStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(new StatusDTO(projectStatusService.getById(id)));
+    }
+
+    @GetMapping("project/by-value/{value}")
+    public ResponseEntity<StatusDTO> getProjectStatus(@PathVariable String value) {
+        return ResponseEntity.ok(new StatusDTO(projectStatusService.getByValue(value)));
     }
 }
