@@ -56,7 +56,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     public CreateProjectResponse createProject(CreateUpdateProjectRequest createProjectRequest) {
         User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        Project project = new Project(createProjectRequest.getName(), createProjectRequest.getDescription());
+        Project project = new Project(createProjectRequest.getName(), createProjectRequest.getDescription(), projectStatusService.getByValue(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN));
         Project savedProject = projectRepository.save(project);
 
         Membership membership = new Membership(user, project, memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name()));

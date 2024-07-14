@@ -5,6 +5,7 @@ import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultSystemRole;
 import cz.cvut.fit.sabirdan.wework.repository.UserRepository;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
 import cz.cvut.fit.sabirdan.wework.service.role.system.SystemRoleService;
+import cz.cvut.fit.sabirdan.wework.service.status.project.ProjectStatusService;
 import cz.cvut.fit.sabirdan.wework.service.status.task.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -18,12 +19,13 @@ public class DataConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    CommandLineRunner commandLineRunner(MemberRoleService memberRoleService, SystemRoleService systemRoleService, UserRepository userRepository, TaskStatusService taskStatusService)
+    CommandLineRunner commandLineRunner(MemberRoleService memberRoleService, SystemRoleService systemRoleService, UserRepository userRepository, TaskStatusService taskStatusService, ProjectStatusService projectStatusService)
     {
         return args -> {
             taskStatusService.initializeTaskStatuses();
             systemRoleService.initializeSystemRoles();
             memberRoleService.initializeMemberRoles();
+            projectStatusService.initializeProjectStatuses();
 
             if (!userRepository.existsByUsername("superadmin"))
                 userRepository.save(

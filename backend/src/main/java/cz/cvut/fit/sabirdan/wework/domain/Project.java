@@ -31,8 +31,9 @@ public class Project extends EntityWithIdLong {
     private Set<Membership> memberships = new HashSet<>();
 
     // default project creation
-    public Project(String name, String description) {
+    public Project(String name, String description, ProjectStatus status) {
         this.name = name;
         this.description = description;
+        this.status = status;
     }
 }
