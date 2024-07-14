@@ -149,7 +149,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_KICKED)) {
 
             List<Membership> memberships = projectRepository.getMembershipsByProjectId(membership.getProject().getId());
-            if (memberships.size() == 1) {
+            if (memberships.size() == 1 && membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED)) {
                 projectRepository.deleteById(membership.getProject().getId());
                 return;
             }
