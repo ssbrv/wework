@@ -22,7 +22,7 @@ import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { AddAssigneeForm } from "./AddAssigneeForm";
 import { ArrowBackUp, UserMinus } from "tabler-icons-react";
 import { useProject } from "../../../../../hooks/ProjectProvider";
-import useStatus from "../../../../../hooks/useStatus";
+import useTaskStatus from "../../../../../hooks/useTaskStatus";
 
 const ProjectTask = (): JSX.Element => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const ProjectTask = (): JSX.Element => {
     { open: openAddAssignee, close: closeAddAssignee },
   ] = useDisclosure(false);
   const { handleException } = useException();
-  const { statuses } = useStatus();
+  const { taskStatuses: statuses } = useTaskStatus();
 
   const {
     register: key,

@@ -3,7 +3,7 @@ import { Status } from "../domain/Status";
 import { getFetcher } from "../api/fetchers";
 import { useException } from "./ExceptionProvider";
 
-const useStatus = () => {
+const useTaskStatus = () => {
   const { handleException } = useException();
 
   const { data, error, isLoading, mutate } = useSWR<Status[]>(
@@ -15,14 +15,14 @@ const useStatus = () => {
 
   if (isLoading || !data)
     return {
-      statuses: [],
+      taskStatuses: [],
       mutate,
     };
 
   return {
-    statuses: data,
+    taskStatuses: data,
     mutate,
   };
 };
 
-export default useStatus;
+export default useTaskStatus;

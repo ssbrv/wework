@@ -4,13 +4,13 @@ import { useProject } from "../../../../../hooks/ProjectProvider";
 import { List } from "../../../../../components/List/List";
 import { useEffect, useState } from "react";
 import { Select } from "@mantine/core";
-import useStatus from "../../../../../hooks/useStatus";
+import useTaskStatus from "../../../../../hooks/useTaskStatus";
 
 const ProjectTasksListView = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
   const { tasks } = useProject();
-  const { statuses } = useStatus();
+  const { taskStatuses: statuses } = useTaskStatus();
 
   const searchParams = new URLSearchParams(location.search);
   const [statusValue, setStatusValue] = useState(

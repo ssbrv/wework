@@ -16,7 +16,7 @@ import { Project } from "../../domain/Project";
 import { Search } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { ArrowsDiagonal } from "tabler-icons-react";
-import useStatus from "../../hooks/useStatus";
+import useTaskStatus from "../../hooks/useTaskStatus";
 import { Status } from "../../domain/Status";
 
 interface GroupedByProjectTasks {
@@ -35,7 +35,7 @@ const TaskList = (): JSX.Element => {
   const [groupping, setGroupping] = useState("project");
   const { handleException } = useException();
   const [searchTerm, setSearchTerm] = useState("");
-  const { statuses } = useStatus();
+  const { taskStatuses: statuses } = useTaskStatus();
 
   const { data: authoredTasks, error: errorAuthoredTasks } = useSWR<Task[]>(
     "tasks/authored",
