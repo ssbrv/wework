@@ -1,6 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.controller;
 
 import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
+import cz.cvut.fit.sabirdan.wework.service.status.membership.MembershipStatusService;
 import cz.cvut.fit.sabirdan.wework.service.status.project.ProjectStatusService;
 import cz.cvut.fit.sabirdan.wework.service.status.task.TaskStatusService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class StatusController {
     private final TaskStatusService taskStatusService;
     private final ProjectStatusService projectStatusService;
+    private final MembershipStatusService membershipStatusService;
 
     @GetMapping("task")
     public ResponseEntity<Iterable<StatusDTO>> getTaskStatuses() {
@@ -45,5 +47,20 @@ public class StatusController {
     @GetMapping("project/by-value/{value}")
     public ResponseEntity<StatusDTO> getProjectStatus(@PathVariable String value) {
         return ResponseEntity.ok(new StatusDTO(projectStatusService.getByValue(value)));
+    }
+
+    @GetMapping("membership")
+    public ResponseEntity<Iterable<StatusDTO>> getMembershipStatuses() {
+        return ResponseEntity.ok(membershipStatusService.findAll().stream().map(StatusDTO::new).collect(Collectors.toList()));
+    }
+
+    @GetMapping("membership/{id}")
+    public ResponseEntity<StatusDTO> getMembershipStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(new StatusDTO(membershipStatusService.getById(id)));
+    }
+
+    @GetMapping("membership/by-value/{value}")
+    public ResponseEntity<StatusDTO> getMembershipStatus(@PathVariable String value) {
+        return ResponseEntity.ok(new StatusDTO(membershipStatusService.getByValue(value)));
     }
 }
