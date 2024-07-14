@@ -31,6 +31,7 @@ public class MembershipController {
     }
 
     // supported operations: kick, accept, reject, cancel invitation
+    // TODO: properly split and remove this method
     @PutMapping("{membershipId}")
     private void changeMembershipStatus(@PathVariable Long membershipId, @RequestBody @Validated ChangeMembershipStatusRequest changeMembershipStatusRequest) {
         membershipService.changeMembershipStatus(membershipId, changeMembershipStatusRequest);
