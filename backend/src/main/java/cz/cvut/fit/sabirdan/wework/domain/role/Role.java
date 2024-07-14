@@ -16,6 +16,9 @@ import java.util.Set;
 @MappedSuperclass
 public abstract class Role<CLASS_HOLDER> extends EntityWithIdLong {
     @Column(nullable = false, unique = true)
+    protected String value;
+
+    @Column(nullable = false)
     protected String name;
 
     @Column(nullable = false)
@@ -33,7 +36,8 @@ public abstract class Role<CLASS_HOLDER> extends EntityWithIdLong {
     protected Set<CLASS_HOLDER> roleHolders = new HashSet<>();
 
     // default role creation
-    public Role(String name, Set<Authorization> authorizations, int power) {
+    public Role(String value, String name, Set<Authorization> authorizations, int power) {
+        this.value = value;
         this.name = name;
         this.authorizations = authorizations;
         this.power = power;

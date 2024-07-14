@@ -17,7 +17,16 @@ import java.util.Set;
 @Entity
 @Table(name = "member_roles")
 public class MemberRole extends Role<Membership> {
-    public MemberRole(String name, Set<Authorization> authorizations, int power) {
-        super(name, authorizations, power);
+    public static final String DEFAULT_ROLE_VALUE_OWNER = "OWNER";
+    public static final String DEFAULT_ROLE_NAME_OWNER = "Owner";
+
+    public static final String DEFAULT_ROLE_VALUE_ADMIN = "ADMIN";
+    public static final String DEFAULT_ROLE_NAME_ADMIN = "Administrator";
+
+    public static final String DEFAULT_ROLE_VALUE_MEMBER = "MEMBER";
+    public static final String DEFAULT_ROLE_NAME_MEMBER = "Basic member";
+
+    public MemberRole(String value, String name, Set<Authorization> authorizations, int power) {
+        super(value, name, authorizations, power);
     }
 }

@@ -1,7 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.service.role.system;
 
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultSystemRole;
 import cz.cvut.fit.sabirdan.wework.domain.role.system.SystemRole;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.repository.role.SystemRoleRepository;
@@ -22,13 +21,13 @@ public class SystemRoleServiceImpl extends CrudServiceImpl<SystemRole> implement
     }
 
     @Override
-    public SystemRole findByName(String name) {
-        return systemRoleRepository.findByName(name).orElseThrow(() -> new NotFoundException("roleName", "Role " + name + " does not exist"));
+    public SystemRole findByValue(String value) {
+        return systemRoleRepository.findByValue(value).orElseThrow(() -> new NotFoundException("roleValue", "Role with " + value + " does not exist"));
     }
 
     @Override
-    public SystemRole findDefaultByName(String name) {
-        return systemRoleRepository.findByName(name).orElseThrow(() -> new RuntimeException("Role " + name + " was not initialized. Contact tech support"));
+    public SystemRole findDefaultByValue(String value) {
+        return systemRoleRepository.findByValue(value).orElseThrow(() -> new RuntimeException("Role with value " + value + " was not initialized. Contact tech support"));
     }
 
     @Override
@@ -43,10 +42,10 @@ public class SystemRoleServiceImpl extends CrudServiceImpl<SystemRole> implement
 
     @Override
     public void initializeSystemRoles() {
-        if (!systemRoleRepository.existsByName(DefaultSystemRole.SUPER_ADMIN.name()))
-            systemRoleRepository.save(new SystemRole(DefaultSystemRole.SUPER_ADMIN.name(), Authorization.getAllSystemAuthorizations(), 90));
+        if (!systemRoleRepository.existsByValue(SystemRole.DEFAULT_ROLE_VALUE_SUPER_ADMIN))
+            systemRoleRepository.save(new SystemRole(SystemRole.DEFAULT_ROLE_VALUE_SUPER_ADMIN, SystemRole.DEFAULT_ROLE_NAME_SUPER_ADMIN, Authorization.getAllSystemAuthorizations(), 90));
 
-        if (!systemRoleRepository.existsByName(DefaultSystemRole.USER.name()))
-            systemRoleRepository.save(new SystemRole(DefaultSystemRole.USER.name(), Authorization.getUserSystemRoleAuthorizations(), 10));
+        if (!systemRoleRepository.existsByValue(SystemRole.DEFAULT_ROLE_VALUE_USER))
+            systemRoleRepository.save(new SystemRole(SystemRole.DEFAULT_ROLE_VALUE_USER, SystemRole.DEFAULT_ROLE_NAME_USER, Authorization.getUserSystemRoleAuthorizations(), 10));
     }
 }

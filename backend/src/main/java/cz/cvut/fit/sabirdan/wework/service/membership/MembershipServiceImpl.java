@@ -3,7 +3,6 @@ package cz.cvut.fit.sabirdan.wework.service.membership;
 import cz.cvut.fit.sabirdan.wework.domain.Membership;
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
@@ -61,7 +60,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         if (!project.getStatus().getValue().equals(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN))
             throw new BadRequestException("You cannot invite people to a closed project");
 
-        MemberRole role = memberRoleService.findByName(inviteRequest.getRoleName());
+        MemberRole role = memberRoleService.findByValue(inviteRequest.getRoleValue());
 
         User user = userService.getByUsername(inviteRequest.getUsername());
 
@@ -156,16 +155,14 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
 
             membership.kick(membershipStatus);
 
-            MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
-
-            if (!membership.getRole().getId().equals(ownerRole.getId()))
+            if (!membership.getRole().getValue().equals(MemberRole.DEFAULT_ROLE_VALUE_OWNER))
                 return;
 
             // grant owner's role to a random member so that project always has an owner
             memberships.stream()
                     .filter(m -> !Objects.equals(m.getId(), membership.getId()))
                     .findAny()
-                    .ifPresent(m -> m.setRole(memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name())));
+                    .ifPresent(m -> m.setRole(memberRoleService.findDefaultByValue(MemberRole.DEFAULT_ROLE_VALUE_OWNER)));
 
             return;
         }
@@ -193,16 +190,14 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
 
             membership.leave(membershipStatus);
 
-            MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
-
-            if (!membership.getRole().getId().equals(ownerRole.getId()))
+            if (!membership.getRole().getValue().equals(MemberRole.DEFAULT_ROLE_VALUE_OWNER))
                 return;
 
-            // If it was a role of owner, then grant owner's role to a random member
+            // grant owner's role to a random member so that project always has an owner
             memberships.stream()
                     .filter(m -> !Objects.equals(m.getId(), membership.getId()))
                     .findAny()
-                    .ifPresent(m -> m.setRole(ownerRole));
+                    .ifPresent(m -> m.setRole(memberRoleService.findDefaultByValue(MemberRole.DEFAULT_ROLE_VALUE_OWNER)));
 
             return;
         }
@@ -227,13 +222,13 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
     public void changeMemberRole(Long membershipId, ChangeMemberRoleRequest changeMemberRoleRequest) {
         Membership membership = getById(membershipId);
 
-        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) && membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED))
+        if (!membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) && !membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED))
             throw new BadRequestException("Cannot change a role to a disabled member");
 
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         User user = membership.getMember();
 
-        MemberRole role = memberRoleService.findByName(changeMemberRoleRequest.getRoleName());
+        MemberRole role = memberRoleService.findByValue(changeMemberRoleRequest.getRoleValue());
 
         Optional<Membership> optionalEditorMembership = findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
 

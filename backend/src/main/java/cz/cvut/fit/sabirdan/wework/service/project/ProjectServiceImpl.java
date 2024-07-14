@@ -4,7 +4,7 @@ import cz.cvut.fit.sabirdan.wework.domain.Membership;
 import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
@@ -64,7 +64,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
         Membership membership = new Membership(
                 user,
                 project,
-                memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name()),
+                memberRoleService.findDefaultByValue(MemberRole.DEFAULT_ROLE_VALUE_OWNER),
                 membershipStatusService.getByValue(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED)
         );
         savedProject.getMemberships().add(membership);

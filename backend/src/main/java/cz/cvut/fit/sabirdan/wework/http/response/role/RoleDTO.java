@@ -23,7 +23,7 @@ public class RoleDTO {
     public RoleDTO(Role<?> role) {
         this(
                 role.getId(),
-                role.getName(),
+                role.getValue(),
                 role.getPower(),
                 role.getAuthorizations(),
                 role.getDescription()

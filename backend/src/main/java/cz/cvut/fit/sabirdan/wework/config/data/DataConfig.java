@@ -1,7 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.config.data;
 
 import cz.cvut.fit.sabirdan.wework.domain.User;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultSystemRole;
+import cz.cvut.fit.sabirdan.wework.domain.role.system.SystemRole;
 import cz.cvut.fit.sabirdan.wework.repository.UserRepository;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
 import cz.cvut.fit.sabirdan.wework.service.role.system.SystemRoleService;
@@ -43,7 +43,7 @@ public class DataConfig {
                         passwordEncoder.encode("safesecret"),
                         "Super",
                         "Admin",
-                        systemRoleService.findDefaultByName(DefaultSystemRole.SUPER_ADMIN.name())
+                        systemRoleService.findDefaultByValue(SystemRole.DEFAULT_ROLE_VALUE_SUPER_ADMIN)
                         )
                 );
 
@@ -54,7 +54,7 @@ public class DataConfig {
                                 passwordEncoder.encode("password"),
                                 "Jiri",
                                 "Novak",
-                                systemRoleService.findDefaultByName(DefaultSystemRole.USER.name())
+                                systemRoleService.findDefaultByValue(SystemRole.DEFAULT_ROLE_VALUE_USER)
                         )
                 );
 
@@ -65,7 +65,7 @@ public class DataConfig {
                                 passwordEncoder.encode("password"),
                                 "David",
                                 "Star",
-                                systemRoleService.findDefaultByName(DefaultSystemRole.USER.name())
+                                systemRoleService.findDefaultByValue(SystemRole.DEFAULT_ROLE_VALUE_USER)
                         )
                 );
         };

@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InviteRequest {
     private String username;
-    private String roleName;
+    private String roleValue;
     private Long projectId;
 }

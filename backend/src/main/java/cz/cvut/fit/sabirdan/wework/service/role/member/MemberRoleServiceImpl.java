@@ -1,19 +1,13 @@
 package cz.cvut.fit.sabirdan.wework.service.role.member;
 
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
-import cz.cvut.fit.sabirdan.wework.domain.role.system.SystemRole;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.repository.role.MemberRoleRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MemberRoleServiceImpl extends CrudServiceImpl<MemberRole> implements MemberRoleService {
@@ -25,13 +19,13 @@ public class MemberRoleServiceImpl extends CrudServiceImpl<MemberRole> implement
     }
 
     @Override
-    public MemberRole findByName(String name) {
-        return memberRoleRepository.findByName(name).orElseThrow(() -> new NotFoundException("roleName", "Role " + name + " does not exist"));
+    public MemberRole findByValue(String value) {
+        return memberRoleRepository.findByValue(value).orElseThrow(() -> new NotFoundException("roleValue", "Role with value " + value + " does not exist"));
     }
 
     @Override
-    public MemberRole findDefaultByName(String name) {
-        return memberRoleRepository.findByName(name).orElseThrow(() -> new RuntimeException("Role " + name + " was not initialized. Contact tech support"));
+    public MemberRole findDefaultByValue(String value) {
+        return memberRoleRepository.findByValue(value).orElseThrow(() -> new RuntimeException("Role with value " + value + " was not initialized. Contact tech support"));
     }
 
     @Override
@@ -46,20 +40,13 @@ public class MemberRoleServiceImpl extends CrudServiceImpl<MemberRole> implement
 
     @Override
     public void initializeMemberRoles() {
-        List<MemberRole> initList = new ArrayList<>();
-        MemberRole ownerMemberRole = new MemberRole(DefaultMemberRole.OWNER.name(), Authorization.getAllMemberAuthorizations(), 90);
-        MemberRole adminMemberRole = new MemberRole(DefaultMemberRole.ADMIN.name(), Authorization.getAdminMemberRoleAuthorizations(), 60);
-        MemberRole memberMemberRole = new MemberRole(DefaultMemberRole.MEMBER.name(), Authorization.getMemberMemberRoleAuthorizations(), 10);
+        if (!memberRoleRepository.existsByValue(MemberRole.DEFAULT_ROLE_VALUE_OWNER))
+            memberRoleRepository.save(new MemberRole(MemberRole.DEFAULT_ROLE_VALUE_OWNER, MemberRole.DEFAULT_ROLE_NAME_OWNER, Authorization.getAllMemberAuthorizations(), 90));
 
-        if (!memberRoleRepository.existsByName(DefaultMemberRole.OWNER.name()))
-            initList.add(ownerMemberRole);
+        if (!memberRoleRepository.existsByValue(MemberRole.DEFAULT_ROLE_VALUE_ADMIN))
+            memberRoleRepository.save(new MemberRole(MemberRole.DEFAULT_ROLE_VALUE_ADMIN, MemberRole.DEFAULT_ROLE_NAME_ADMIN, Authorization.getAdminMemberRoleAuthorizations(), 60));
 
-        if (!memberRoleRepository.existsByName(DefaultMemberRole.ADMIN.name()))
-            initList.add(adminMemberRole);
-
-        if (!memberRoleRepository.existsByName(DefaultMemberRole.MEMBER.name()))
-            initList.add(memberMemberRole);
-
-        memberRoleRepository.saveAll(initList);
+        if (!memberRoleRepository.existsByValue(MemberRole.DEFAULT_ROLE_VALUE_MEMBER))
+            memberRoleRepository.save(new MemberRole(MemberRole.DEFAULT_ROLE_VALUE_MEMBER, MemberRole.DEFAULT_ROLE_NAME_MEMBER, Authorization.getMemberMemberRoleAuthorizations(), 10));
     }
 }

@@ -17,7 +17,13 @@ import java.util.Set;
 @Entity
 @Table(name = "system_roles")
 public class SystemRole extends Role<User> {
-    public SystemRole(String name, Set<Authorization> authorizations, int power) {
-        super(name, authorizations, power);
+    public static final String DEFAULT_ROLE_VALUE_SUPER_ADMIN = "SUPER_ADMIN";
+    public static final String DEFAULT_ROLE_NAME_SUPER_ADMIN = "Super administrator";
+
+    public static final String DEFAULT_ROLE_VALUE_USER = "USER";
+    public static final String DEFAULT_ROLE_NAME_USER = "Basic user";
+
+    public SystemRole(String value, String name, Set<Authorization> authorizations, int power) {
+        super(value, name, authorizations, power);
     }
 }
