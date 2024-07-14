@@ -197,7 +197,7 @@ public class TaskServiceImpl extends CrudServiceImpl<Task> implements TaskServic
         if (!hasMemberAuthority && !hasSystemAuthority)
             throw new UnauthorizedException("You are not authorized to edit tasks in this project");
 
-        task.setStatus(taskStatusService.getById(updateTaskStatusRequest.getStatusId()));
+        task.setStatus(taskStatusService.getByValue(updateTaskStatusRequest.getStatusValue(), "statusValue"));
     }
 
     @Override

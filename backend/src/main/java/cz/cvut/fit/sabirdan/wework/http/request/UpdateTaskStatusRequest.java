@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateTaskStatusRequest {
-    private Long statusId;
+    private String statusValue;
 }

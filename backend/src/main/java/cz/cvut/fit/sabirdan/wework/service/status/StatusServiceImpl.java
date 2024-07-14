@@ -21,4 +21,10 @@ abstract public class StatusServiceImpl<T extends Status, R extends StatusReposi
         return statusRepository.findByValue(value)
                 .orElseThrow(() -> new NotFoundException("The status does not exist"));
     }
+
+    @Override
+    public T getByValue(String value, String attributeNameForErrorHandling) {
+        return statusRepository.findByValue(value)
+                .orElseThrow(() -> new NotFoundException("The status does not exist", attributeNameForErrorHandling));
+    }
 }
