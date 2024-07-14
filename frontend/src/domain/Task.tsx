@@ -1,12 +1,12 @@
-import { TaskStatus } from "./enumerations/Enumerations";
 import { Project } from "./Project";
+import { Status } from "./Status";
 import { User } from "./User";
 
 export interface Task {
   id: number;
   summary: string;
   description: string;
-  status: TaskStatus;
+  status: Status;
   project: Project;
   author: User;
   assignees: User[];

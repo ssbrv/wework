@@ -14,9 +14,10 @@ import { getFetcher } from "../../api/fetchers";
 import { useException } from "../../hooks/ExceptionProvider";
 import { Project } from "../../domain/Project";
 import { Search } from "tabler-icons-react";
-import { TaskStatus } from "../../domain/enumerations/Enumerations";
 import { useNavigate } from "react-router-dom";
 import { ArrowsDiagonal } from "tabler-icons-react";
+import useStatus from "../../hooks/useStatus";
+import { Status } from "../../domain/Status";
 
 interface GroupedByProjectTasks {
   tasks: Task[];
@@ -25,7 +26,7 @@ interface GroupedByProjectTasks {
 
 interface GroupedByStatusTasks {
   tasks: Task[];
-  status: TaskStatus;
+  status: Status;
 }
 
 const TaskList = (): JSX.Element => {
@@ -34,6 +35,7 @@ const TaskList = (): JSX.Element => {
   const [groupping, setGroupping] = useState("project");
   const { handleException } = useException();
   const [searchTerm, setSearchTerm] = useState("");
+  const { statuses } = useStatus();
 
   const { data: authoredTasks, error: errorAuthoredTasks } = useSWR<Task[]>(
     "tasks/authored",
@@ -73,11 +75,11 @@ const TaskList = (): JSX.Element => {
   };
 
   const groupTasksByStatus = (): GroupedByStatusTasks[] => {
-    const statuses: TaskStatus[] = ["TODO", "IN_PROGRESS", "COMPLETED"];
     return statuses
       .map((status) => ({
         status,
-        tasks: filteredTasks?.filter((task) => task.status === status) || [],
+        tasks:
+          filteredTasks?.filter((task) => task.status.id === status.id) || [],
       }))
       .filter((group) => group.tasks.length > 0);
   };
@@ -121,10 +123,12 @@ const TaskList = (): JSX.Element => {
       const groupedByStatus = groupTasksByStatus();
       return groupedByStatus.map((group) => (
         <div
-          key={group.status}
+          key={group.status.id}
           className="card p-m flex flex-col gap-s min-h-[250px]"
         >
-          <div className="fnt-lg font-bold text-center">{group.status}</div>
+          <div className="fnt-lg font-bold text-center">
+            {group.status.name}
+          </div>
 
           <List>
             {group.tasks.map((task) => (

@@ -1,7 +1,7 @@
 import {
   Button,
   Modal,
-  NativeSelect,
+  Select,
   Textarea,
   TextInput,
   Tooltip,
@@ -22,6 +22,7 @@ import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { AddAssigneeForm } from "./AddAssigneeForm";
 import { ArrowBackUp, UserMinus } from "tabler-icons-react";
 import { useProject } from "../../../../../hooks/ProjectProvider";
+import useStatus from "../../../../../hooks/useStatus";
 
 const ProjectTask = (): JSX.Element => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const ProjectTask = (): JSX.Element => {
     { open: openAddAssignee, close: closeAddAssignee },
   ] = useDisclosure(false);
   const { handleException } = useException();
+  const { statuses } = useStatus();
 
   const {
     register: key,
@@ -45,11 +47,12 @@ const ProjectTask = (): JSX.Element => {
   } = useForm<CreateUpdateTaskRequest>();
 
   const {
-    register: statusKey,
     setError: setStatusError,
     formState: { errors: statusErrors },
     reset: statusReset,
     handleSubmit: statusSubmit,
+    watch: getStatusFormValues,
+    setValue: setStatusFormValue,
   } = useForm<ChangeTaskStatusRequest>();
 
   function resetForm(): void {
@@ -62,7 +65,7 @@ const ProjectTask = (): JSX.Element => {
 
   useEffect(() => {
     resetForm();
-    statusReset({ status: task?.status });
+    statusReset({ statusValue: task?.status.value });
   }, [task]);
 
   const handleEdit = handleSubmit(
@@ -98,7 +101,7 @@ const ProjectTask = (): JSX.Element => {
         })
         .catch(function (exception) {
           handleException(exception, setStatusError, true);
-          statusReset({ status: task?.status });
+          statusReset({ statusValue: task?.status.value });
         });
     }
   );
@@ -249,23 +252,25 @@ const ProjectTask = (): JSX.Element => {
         </form>
         <div className="flex flex-col gap-m">
           <div className="card flex flex-col gap-s p-m">
-            <NativeSelect
-              {...statusKey("status")}
+            <Select
               size="md"
               radius="md"
               variant="filled"
-              data={[
-                { label: "To-do", value: "TODO" },
-                { label: "In progress", value: "IN_PROGRESS" },
-                { label: "Completed", value: "COMPLETED" },
-              ]}
-              error={statusErrors.status?.message}
+              data={statuses.map((status) => ({
+                value: status.value,
+                label: status.name,
+              }))}
+              error={statusErrors.statusValue?.message}
               label="Task status"
               styles={{
                 input: {
                   borderColor: "transparent",
                 },
               }}
+              value={getStatusFormValues("statusValue")}
+              onChange={(value) =>
+                setStatusFormValue("statusValue", value ?? "")
+              }
             />
             <Button
               size="md"

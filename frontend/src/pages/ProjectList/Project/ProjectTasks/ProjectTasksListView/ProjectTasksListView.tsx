@@ -4,31 +4,31 @@ import { useProject } from "../../../../../hooks/ProjectProvider";
 import { List } from "../../../../../components/List/List";
 import { useEffect, useState } from "react";
 import { Select } from "@mantine/core";
+import useStatus from "../../../../../hooks/useStatus";
 
 const ProjectTasksListView = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
   const { tasks } = useProject();
+  const { statuses } = useStatus();
 
-  // Extract status from query parameters or default to "TODO"
   const searchParams = new URLSearchParams(location.search);
-  const initialStatus = searchParams.get("status");
-
-  const [status, setStatus] = useState(initialStatus);
+  const [statusValue, setStatusValue] = useState(
+    searchParams.get("statusValue")
+  );
 
   useEffect(() => {
-    // Update the query parameter whenever the status changes
     const params = new URLSearchParams(location.search);
-    if (status) params.set("status", status);
-    else params.delete("status");
+    if (statusValue) params.set("statusValue", statusValue);
+    else params.delete("statusValue");
     navigate({ search: params.toString() }, { replace: true });
-  }, [status, navigate]);
+  }, [statusValue, navigate]);
 
   const filteredTasks =
-    status === null
+    statusValue === null
       ? tasks
       : tasks?.filter((task) => {
-          return task.status === status;
+          return task.status.value === statusValue;
         });
 
   const transformedTasks = filteredTasks
@@ -46,16 +46,15 @@ const ProjectTasksListView = (): JSX.Element => {
         title="List view"
         controls={[
           <Select
-            value={status}
-            onChange={(value) => setStatus(value)}
+            value={statusValue}
+            onChange={(value) => setStatusValue(value)}
             size="md"
             radius="md"
             variant="filled"
-            data={[
-              { label: "To-do", value: "TODO" },
-              { label: "In progress", value: "IN_PROGRESS" },
-              { label: "Completed", value: "COMPLETED" },
-            ]}
+            data={statuses.map((status) => ({
+              value: status.value,
+              label: status.name,
+            }))}
             styles={{
               input: {
                 borderColor: "transparent",
