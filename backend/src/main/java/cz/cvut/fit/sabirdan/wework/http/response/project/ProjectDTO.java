@@ -1,7 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.http.response.project;
 
 import cz.cvut.fit.sabirdan.wework.domain.Project;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
