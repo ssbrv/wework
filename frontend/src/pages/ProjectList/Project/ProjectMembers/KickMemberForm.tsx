@@ -3,6 +3,7 @@ import { useException } from "../../../../hooks/ExceptionProvider";
 import { useMembership } from "../../../../hooks/MembershipProvider";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { useNavigate } from "react-router-dom";
+import api from "../../../../api/api";
 
 interface Props {
   onClose: () => void;
@@ -10,11 +11,12 @@ interface Props {
 
 const KickMemberForm = ({ onClose }: Props): JSX.Element => {
   const { handleException } = useException();
-  const { membership, changeMembershipStatus } = useMembership();
+  const { membership } = useMembership();
   const navigate = useNavigate();
 
   async function kickMember(): Promise<void> {
-    await changeMembershipStatus({ status: "KICKED" })
+    await api
+      .put(`/memberships/${membership?.id}/kick`)
       .then(function () {
         goodNotification("User was kicked successfully!");
         onClose();

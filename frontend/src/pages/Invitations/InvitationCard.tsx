@@ -14,11 +14,9 @@ import {
   X,
 } from "tabler-icons-react";
 import { KeyedMutator } from "swr";
-import { ChangeMembershipStatusRequest } from "../../http/request/ChangeMembershipStatusRequest";
 import api from "../../api/api";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import { useException } from "../../hooks/ExceptionProvider";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/utils";
 
@@ -29,31 +27,27 @@ interface Props {
 
 export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
   const { handleException } = useException();
-  const { setValue, handleSubmit } = useForm<ChangeMembershipStatusRequest>();
   const navigate = useNavigate();
 
-  const changeMembershipStatusRequest = handleSubmit(
-    async (
-      changeMembershipStatusRequest: ChangeMembershipStatusRequest
-    ): Promise<void> => {
-      try {
-        await api.put(
-          `/memberships/${invitation.id}`,
-          changeMembershipStatusRequest
-        );
-        goodNotification(
-          `The invitation was ${
-            changeMembershipStatusRequest.status === "ENABLED"
-              ? "accepted successfully!"
-              : "rejected successfully!"
-          }`
-        );
-        mutate();
-      } catch (exception) {
-        handleException(exception, undefined, true);
-      }
+  const reject = async (): Promise<void> => {
+    try {
+      await api.put(`/memberships/${invitation.id}/reject`);
+      goodNotification("The invitation was rejected successfully!");
+      mutate();
+    } catch (exception) {
+      handleException(exception, undefined, true);
     }
-  );
+  };
+
+  const accept = async (): Promise<void> => {
+    try {
+      await api.put(`/memberships/${invitation.id}/accept`);
+      goodNotification("The invitation was accepted successfully!");
+      mutate();
+    } catch (exception) {
+      handleException(exception, undefined, true);
+    }
+  };
 
   return (
     <div className="card p-m flex flex-col gap-s">
@@ -164,8 +158,7 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
               <Check
                 className="size-l text-secondary hover:text-attract transition-all duration-200 ease-linear"
                 onClick={() => {
-                  setValue("status", "ENABLED");
-                  changeMembershipStatusRequest();
+                  accept();
                 }}
               />
             </div>
@@ -182,8 +175,7 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
               <X
                 className="size-l text-secondary hover:text-danger transition-all duration-200 ease-linear"
                 onClick={() => {
-                  setValue("status", "REJECTED");
-                  changeMembershipStatusRequest();
+                  reject();
                 }}
               />
             </div>

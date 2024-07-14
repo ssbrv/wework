@@ -1,19 +1,14 @@
-import { createContext, useCallback, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import { getFetcher } from "../api/fetchers";
 import { useException } from "./ExceptionProvider";
 import { Outlet, useParams } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { Membership } from "../domain/Membership";
-import { ChangeMembershipStatusRequest } from "../http/request/ChangeMembershipStatusRequest";
-import api from "../api/api";
 
 interface MembershipContextProps {
   membership: Membership | undefined;
   mutate: KeyedMutator<Membership>;
-  changeMembershipStatus: (
-    changeMembershipStatusRequest: ChangeMembershipStatusRequest
-  ) => Promise<void>;
 }
 
 const MembershipContext = createContext<MembershipContextProps | undefined>(
@@ -38,21 +33,9 @@ const MembershipProvider = (): JSX.Element => {
     handleException(error, undefined, true);
   }
 
-  const changeMembershipStatus = useCallback(
-    async (
-      changeMembershipStatusRequest: ChangeMembershipStatusRequest
-    ): Promise<void> => {
-      await api.put(
-        `/memberships/${membership?.id}`,
-        changeMembershipStatusRequest
-      );
-    },
-    [membership]
-  );
-
   const contextValue = useMemo(
-    () => ({ mutate, membership, changeMembershipStatus }),
-    [membership, mutate, changeMembershipStatus]
+    () => ({ mutate, membership }),
+    [membership, mutate]
   );
   return (
     <MembershipContext.Provider value={contextValue}>

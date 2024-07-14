@@ -1,5 +1,6 @@
 package cz.cvut.fit.sabirdan.wework.controller;
 
+import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangeMemberRoleRequest;
 import cz.cvut.fit.sabirdan.wework.http.request.ChangeMembershipStatusRequest;
@@ -29,10 +30,25 @@ public class MembershipController {
         return ResponseEntity.ok(membershipService.invite(inviteRequest));
     }
 
-    // supported operations: kick, accept, reject, uninvite
+    // supported operations: kick, accept, reject, cancel invitation
     @PutMapping("{membershipId}")
     private void changeMembershipStatus(@PathVariable Long membershipId, @RequestBody @Validated ChangeMembershipStatusRequest changeMembershipStatusRequest) {
         membershipService.changeMembershipStatus(membershipId, changeMembershipStatusRequest);
+    }
+
+    @PutMapping("{membershipId}/kick")
+    private void kick(@PathVariable Long membershipId) {
+        membershipService.changeMembershipStatus(membershipId, new ChangeMembershipStatusRequest(MembershipStatus.DEFAULT_STATUS_VALUE_KICKED));
+    }
+
+    @PutMapping("{membershipId}/accept")
+    private void accept(@PathVariable Long membershipId) {
+        membershipService.changeMembershipStatus(membershipId, new ChangeMembershipStatusRequest(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED));
+    }
+
+    @PutMapping("{membershipId}/reject")
+    private void reject(@PathVariable Long membershipId) {
+        membershipService.changeMembershipStatus(membershipId, new ChangeMembershipStatusRequest(MembershipStatus.DEFAULT_STATUS_VALUE_REJECTED));
     }
 
     @PutMapping("{membershipId}/member-role")
