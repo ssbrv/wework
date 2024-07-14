@@ -13,11 +13,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "project_statuses")
 public class ProjectStatus extends Status {
-    static public String DEFAULT_STATUS_VALUE_OPEN = "OPEN";
-    static public String DEFAULT_STATUS_NAME_OPEN = "Open";
+    static final public String DEFAULT_STATUS_VALUE_OPEN = "OPEN";
+    static final public String DEFAULT_STATUS_NAME_OPEN = "Open";
 
-    static public String DEFAULT_STATUS_VALUE_CLOSED = "CLOSED";
-    static public String DEFAULT_STATUS_NAME_CLOSED = "Closed";
+    static final public String DEFAULT_STATUS_VALUE_CLOSED = "CLOSED";
+    static final public String DEFAULT_STATUS_NAME_CLOSED = "Closed";
 
     public ProjectStatus(String value, String name) {
         super(value, name);

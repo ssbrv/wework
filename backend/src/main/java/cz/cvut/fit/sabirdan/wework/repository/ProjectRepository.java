@@ -11,15 +11,15 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    @Query("SELECT p FROM Project p JOIN p.memberships m WHERE m.member.username = :username and m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.ENABLED")
+    @Query("SELECT p FROM Project p JOIN p.memberships m WHERE m.member.username = :username and m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED")
     List<Project> findUserProjects(@Param("username") String username);
 
-    @Query("SELECT count(m) FROM Project p JOIN p.memberships m WHERE p.id = :projectId AND m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.ENABLED")
+    @Query("SELECT count(m) FROM Project p JOIN p.memberships m WHERE p.id = :projectId AND m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED")
     Integer countEnabledMembershipsById(@Param("projectId") Long projectId);
 
-    @Query("SELECT m FROM Project p JOIN p.memberships m WHERE p.id = :projectId and m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.ENABLED")
+    @Query("SELECT m FROM Project p JOIN p.memberships m WHERE p.id = :projectId and m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED")
     List<Membership> getMembershipsByProjectId(@Param("projectId") Long projectId);
 
-    @Query("SELECT m FROM Project p JOIN p.memberships m WHERE p.id = :projectId and m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.PROPOSED")
+    @Query("SELECT m FROM Project p JOIN p.memberships m WHERE p.id = :projectId and m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED")
     List<Membership> getInvitationsByProjectId(@Param("projectId") Long projectId);
 }

@@ -1,7 +1,7 @@
 package cz.cvut.fit.sabirdan.wework.http.response.membership;
 
 import cz.cvut.fit.sabirdan.wework.domain.Membership;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
+import cz.cvut.fit.sabirdan.wework.http.response.StatusDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.project.ProjectDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.role.RoleDTO;
 import cz.cvut.fit.sabirdan.wework.http.response.user.SafeUserDTO;
@@ -21,7 +21,7 @@ public class MembershipDTO {
     private LocalDateTime createdAt;
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
-    private MembershipStatus status;
+    private StatusDTO status;
     private SafeUserDTO member;
     private SafeUserDTO inviter;
     private ProjectDTO project;
@@ -37,7 +37,7 @@ public class MembershipDTO {
                 membership.getCreatedAt(),
                 membership.getStartedAt(),
                 membership.getEndedAt(),
-                membership.getStatus(),
+                new StatusDTO(membership.getStatus()),
                 new SafeUserDTO(membership.getMember()),
                 (membership.getInviter() != null) ? new SafeUserDTO(membership.getInviter()) : null,
                 new ProjectDTO(membership.getProject(), memberCounter),

@@ -2,7 +2,7 @@ package cz.cvut.fit.sabirdan.wework.domain;
 
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +22,10 @@ public class Membership extends EntityWithIdLong {
     private LocalDateTime startedAt;
     @Column
     private LocalDateTime endedAt;
-    @Column
-    @Enumerated(EnumType.STRING)
-    private MembershipStatus status = MembershipStatus.PROPOSED;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private MembershipStatus status;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
@@ -45,9 +46,10 @@ public class Membership extends EntityWithIdLong {
     // owner
     public Membership(User member,
                       Project project,
-                      MemberRole role) {
+                      MemberRole role,
+                      MembershipStatus statusEnabled) {
         this.startedAt = LocalDateTime.now();
-        this.status = MembershipStatus.ENABLED;
+        this.status = statusEnabled;
         this.member = member;
         this.project = project;
         this.role = role;
@@ -57,11 +59,13 @@ public class Membership extends EntityWithIdLong {
     public Membership(User member,
                       Project project,
                       User inviter,
-                      MemberRole role) {
+                      MemberRole role,
+                      MembershipStatus statusProposed) {
         this.member = member;
         this.project = project;
         this.inviter = inviter;
         this.role = role;
+        this.status = statusProposed;
     }
 
     public boolean isAuthorized(Authorization authorization) {
@@ -76,22 +80,22 @@ public class Membership extends EntityWithIdLong {
         return (this.role != null && this.role.hasAuthorityOver(role));
     }
 
-    public void accept() {
+    public void accept(MembershipStatus statusEnabled) {
         this.startedAt = LocalDateTime.now();
-        this.status = MembershipStatus.ENABLED;
+        this.status = statusEnabled;
     }
 
-    public void reject() {
-        this.status = MembershipStatus.REJECTED;
+    public void reject(MembershipStatus statusRejected) {
+        this.status = statusRejected;
     }
 
-    public void leave() {
+    public void leave(MembershipStatus statusLeft) {
         this.endedAt = LocalDateTime.now();
-        this.status = MembershipStatus.LEFT;
+        this.status = statusLeft;
     }
 
-    public void kick() {
+    public void kick(MembershipStatus statusKicked) {
         this.endedAt = LocalDateTime.now();
-        this.status = MembershipStatus.KICKED;
+        this.status = statusKicked;
     }
 }

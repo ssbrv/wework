@@ -5,7 +5,7 @@ import cz.cvut.fit.sabirdan.wework.domain.Project;
 import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
@@ -19,6 +19,7 @@ import cz.cvut.fit.sabirdan.wework.repository.ProjectRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import cz.cvut.fit.sabirdan.wework.service.membership.MembershipService;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
+import cz.cvut.fit.sabirdan.wework.service.status.membership.MembershipStatusService;
 import cz.cvut.fit.sabirdan.wework.service.status.project.ProjectStatusService;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
     private final MembershipService membershipService;
     private final MemberRoleService memberRoleService;
     private final ProjectStatusService projectStatusService;
+    private final MembershipStatusService membershipStatusService;
 
     @Override
     public JpaRepository<Project, Long> getRepository() {
@@ -59,7 +61,12 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
         Project project = new Project(createProjectRequest.getName(), createProjectRequest.getDescription(), projectStatusService.getByValue(ProjectStatus.DEFAULT_STATUS_VALUE_OPEN));
         Project savedProject = projectRepository.save(project);
 
-        Membership membership = new Membership(user, project, memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name()));
+        Membership membership = new Membership(
+                user,
+                project,
+                memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name()),
+                membershipStatusService.getByValue(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED)
+        );
         savedProject.getMemberships().add(membership);
 
         return CreateProjectResponse.builder().id(savedProject.getId()).build();
@@ -103,13 +110,13 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
                 () -> new UnauthorizedException("You are not a part of this project")
         );
 
-        switch (membership.getStatus()) {
-            case ENABLED -> {
+        switch (membership.getStatus().getValue()) {
+            case MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED -> {
                 return membership.getProject();
             }
-            case LEFT -> throw new UnauthorizedException("You left this project");
-            case KICKED -> throw new UnauthorizedException("You were kicked from this project");
-            case PROPOSED -> throw new UnauthorizedException("You are not a part of this project yet. Check your invitations");
+            case MembershipStatus.DEFAULT_STATUS_VALUE_LEFT -> throw new UnauthorizedException("You left this project");
+            case MembershipStatus.DEFAULT_STATUS_VALUE_KICKED -> throw new UnauthorizedException("You were kicked from this project");
+            case MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED -> throw new UnauthorizedException("You are not a part of this project yet. Check your invitations");
             default -> throw new RuntimeException("Unknown membership status. Please, contact tech support");
         }
     }
@@ -163,7 +170,7 @@ public class ProjectServiceImpl extends CrudServiceImpl<Project> implements Proj
         Membership membership = membershipService.findEnabledMembershipByProjectIdAndUsername(projectId, user.getUsername())
                 .orElseThrow(() -> new BadRequestException("You are not a part of this project"));
 
-        membershipService.changeMembershipStatus(membership.getId(), new ChangeMembershipStatusRequest(MembershipStatus.LEFT));
+        membershipService.changeMembershipStatus(membership.getId(), new ChangeMembershipStatusRequest(MembershipStatus.DEFAULT_STATUS_VALUE_LEFT));
     }
 
     @Override

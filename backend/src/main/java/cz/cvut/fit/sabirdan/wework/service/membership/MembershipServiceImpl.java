@@ -6,7 +6,7 @@ import cz.cvut.fit.sabirdan.wework.domain.User;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.DefaultMemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.role.member.MemberRole;
 import cz.cvut.fit.sabirdan.wework.domain.enumeration.Authorization;
-import cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus;
+import cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus;
 import cz.cvut.fit.sabirdan.wework.domain.status.project.ProjectStatus;
 import cz.cvut.fit.sabirdan.wework.http.exception.BadRequestException;
 import cz.cvut.fit.sabirdan.wework.http.exception.NotFoundException;
@@ -19,6 +19,7 @@ import cz.cvut.fit.sabirdan.wework.repository.MembershipRepository;
 import cz.cvut.fit.sabirdan.wework.repository.ProjectRepository;
 import cz.cvut.fit.sabirdan.wework.service.CrudServiceImpl;
 import cz.cvut.fit.sabirdan.wework.service.role.member.MemberRoleService;
+import cz.cvut.fit.sabirdan.wework.service.status.membership.MembershipStatusService;
 import cz.cvut.fit.sabirdan.wework.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,6 +39,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
     private final UserService userService;
     private final MemberRoleService memberRoleService;
     private final ProjectRepository projectRepository;
+    private final MembershipStatusService membershipStatusService;
 
     @Override
     public JpaRepository<Membership, Long> getRepository() {
@@ -67,7 +69,8 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 user,
                 project,
                 inviter,
-                role
+                role,
+                membershipStatusService.getByValue(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED)
         );
 
         if (inviter.isAuthorized(Authorization.SYSTEM_INVITE))
@@ -133,6 +136,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 .orElseThrow(() -> new NotFoundException("Membership does not exist"));
         User member = membership.getMember();
         Optional<Membership> optionalEditorMembership = findEnabledMembershipByProjectIdAndUsername(membership.getProject().getId(), editor.getUsername());
+        MembershipStatus membershipStatus = membershipStatusService.getByValue(changeMembershipStatusRequest.getStatusValue());
 
         final boolean hasMemberAuthority = optionalEditorMembership.map(membershipEditor ->
                         (membershipEditor.isAuthorized(Authorization.KICK) && membershipEditor.hasAuthorityOver(membership)))
@@ -141,8 +145,8 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         final boolean selfChange = editor.getUsername().equals(member.getUsername());
 
         if ((hasMemberAuthority || hasSystemAuthority)
-                && (membership.getStatus() == MembershipStatus.ENABLED || membership.getStatus() == MembershipStatus.PROPOSED)
-                && changeMembershipStatusRequest.getStatus() == MembershipStatus.KICKED) {
+                && (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) || membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED))
+                && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_KICKED)) {
 
             List<Membership> memberships = projectRepository.getMembershipsByProjectId(membership.getProject().getId());
             if (memberships.size() == 1) {
@@ -150,7 +154,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 return;
             }
 
-            membership.kick();
+            membership.kick(membershipStatus);
 
             MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
 
@@ -169,17 +173,17 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
         if (!selfChange && !hasSystemAuthority)
             throw new UnauthorizedException("You are not authorized to perform this action");
 
-        if (membership.getStatus() == MembershipStatus.PROPOSED && changeMembershipStatusRequest.getStatus() == MembershipStatus.ENABLED) {
-            membership.accept();
+        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED) && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED)) {
+            membership.accept(membershipStatus);
             return;
         }
 
-        if (membership.getStatus() == MembershipStatus.PROPOSED && changeMembershipStatusRequest.getStatus() == MembershipStatus.REJECTED) {
-            membership.reject();
+        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED) && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_REJECTED)) {
+            membership.reject(membershipStatus);
             return;
         }
 
-        if (membership.getStatus() == MembershipStatus.ENABLED && changeMembershipStatusRequest.getStatus() == MembershipStatus.LEFT) {
+        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_LEFT)) {
 
             List<Membership> memberships = projectRepository.getMembershipsByProjectId(membership.getProject().getId());
             if (memberships.size() == 1) {
@@ -187,7 +191,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
                 return;
             }
 
-            membership.leave();
+            membership.leave(membershipStatus);
 
             MemberRole ownerRole = memberRoleService.findDefaultByName(DefaultMemberRole.OWNER.name());
 
@@ -203,10 +207,10 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
             return;
         }
 
-        if (membership.getStatus() == MembershipStatus.ENABLED && changeMembershipStatusRequest.getStatus() == MembershipStatus.KICKED)
+        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) && membershipStatus.getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_KICKED))
             throw new BadRequestException("You cannot kick yourself from the project");
 
-        throw new BadRequestException("Invalid operation: cannot self change membership status from " + membership.getStatus() + " to " + changeMembershipStatusRequest.getStatus());
+        throw new BadRequestException("Invalid operation: cannot self change membership status from " + membership.getStatus().getName() + " to " + membershipStatus.getName());
     }
 
     @Override
@@ -223,7 +227,7 @@ public class MembershipServiceImpl extends CrudServiceImpl<Membership> implement
     public void changeMemberRole(Long membershipId, ChangeMemberRoleRequest changeMemberRoleRequest) {
         Membership membership = getById(membershipId);
 
-        if (membership.getStatus() != MembershipStatus.ENABLED && membership.getStatus() != MembershipStatus.PROPOSED)
+        if (membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED) && membership.getStatus().getValue().equals(MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED))
             throw new BadRequestException("Cannot change a role to a disabled member");
 
         User editor = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

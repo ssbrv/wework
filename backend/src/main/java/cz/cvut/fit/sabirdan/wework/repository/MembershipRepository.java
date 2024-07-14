@@ -14,12 +14,12 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     @Query("SELECT m FROM Membership m WHERE m.project.id = :projectId and m.member.username = :username")
     Optional<Membership> findMembershipByProjectIdAndUsername(@Param("projectId") Long projectId, @Param("username") String username);
 
-    @Query("SELECT m FROM Membership m WHERE m.project.id = :projectId and m.member.username = :username and m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.ENABLED")
+    @Query("SELECT m FROM Membership m WHERE m.project.id = :projectId and m.member.username = :username and m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_ENABLED")
     Optional<Membership> findEnabledMembershipByProjectIdAndUsername(@Param("projectId") Long projectId, @Param("username") String username);
 
-    @Query("SELECT m FROM Membership m WHERE m.member.username = :username and m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.PROPOSED")
+    @Query("SELECT m FROM Membership m WHERE m.member.username = :username and m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED")
     List<Membership> findInvitationsByUsername(@Param("username") String username);
 
-    @Query("SELECT m FROM Membership m WHERE m.status = cz.cvut.fit.sabirdan.wework.domain.enumeration.MembershipStatus.PROPOSED")
+    @Query("SELECT m FROM Membership m WHERE m.status.value = cz.cvut.fit.sabirdan.wework.domain.status.membership.MembershipStatus.DEFAULT_STATUS_VALUE_PROPOSED")
     List<Membership> findInvitations();
 }
