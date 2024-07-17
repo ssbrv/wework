@@ -10,7 +10,6 @@ import {
   PointerSensor,
 } from "@dnd-kit/core";
 import { forwardRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 interface Identifiable {
   id: string | number;
@@ -164,10 +163,7 @@ const KanbanBoard = <ITEM extends Identifiable, COLUMN extends Identifiable>({
           ))}
         </div>
 
-        {createPortal(
-          <DragOverlay>{activeItem && <Item item={activeItem} />}</DragOverlay>,
-          document.body
-        )}
+        <DragOverlay>{activeItem && <Item item={activeItem} />}</DragOverlay>
       </DndContext>
     </div>
   );
