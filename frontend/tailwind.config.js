@@ -41,11 +41,13 @@ module.exports = {
       },
       fontSize: {
         sm: "1rem", // basic
+        DEFAULT: "1rem",
         md: "1.25rem", // ???
         lg: "2rem", // headings
       },
       lineHeight: {
         sm: "1.25rem", // basic
+        DEFAULT: "1.25rem", // basic
         md: "1.5rem", // ???
         lg: "2.625rem", // headings
       },

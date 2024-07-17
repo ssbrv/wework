@@ -61,7 +61,7 @@ const NavigationBarLayout = (): JSX.Element => {
       <div
         className={`${
           navigationBarRolled ? "w-60" : "w-20"
-        } hover:w-60 h-screen fixed flex flex-col p-s gap-m bg-secondary rounded-r shadow transition-[width] duration-500 ease-out z-50 overflow-auto`}
+        } hover:w-60 h-screen fixed flex flex-col p-s gap-m bg-secondary rounded-r shadow transition-[width] duration-500 ease-out z-[100] overflow-auto`}
       >
         <NavigationBarItem
           icon={
