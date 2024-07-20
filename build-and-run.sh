@@ -2,7 +2,7 @@
 
 cd ./frontend/
 npm install
-npm run build
+npm run build-custom
 
 cd ../backend
 mvn spring-boot:run
