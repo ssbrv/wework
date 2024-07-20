@@ -10,7 +10,7 @@ export const goodNotification = (
     title: notificationTitle,
     message: notificationMessage,
     radius: "md",
-    autoClose: 4000,
+    autoClose: 3000,
     style: { backgroundColor: "#d9ffde" },
   });
 };
@@ -24,11 +24,11 @@ export const okNotification = (
     title: notificationTitle,
     message: notificationMessage,
     radius: "md",
-    autoClose: 4000,
+    autoClose: 3000,
   });
 };
 
-// no autoclose, pink background
+// longer autoclose, pink background
 export const badNotification = (
   notificationTitle?: string,
   notificationMessage?: string
@@ -39,6 +39,6 @@ export const badNotification = (
     message: notificationMessage,
     radius: "md",
     style: { backgroundColor: "#fff1f0" },
-    autoClose: 10000,
+    autoClose: 5000,
   });
 };
