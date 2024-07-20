@@ -48,7 +48,7 @@ const ProjectTasksBoardView = (): JSX.Element => {
         items={localTasks.sort((a, b) => a.id - b.id)}
         renderItemContent={(task) => {
           return (
-            <div className="flex items-center justify-between gap-m">
+            <div className="flex items-center justify-between gap-m card p-s">
               <div>{task.summary}</div>
               <div className="flex items-center gap-s">
                 <ArrowsDiagonal
