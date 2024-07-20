@@ -9,7 +9,7 @@ import {
   DragStartEvent,
   PointerSensor,
 } from "@dnd-kit/core";
-import { forwardRef, useState } from "react";
+import React, { forwardRef, useState } from "react";
 
 interface Identifiable {
   id: string | number;
@@ -59,7 +59,7 @@ const KanbanBoard = <ITEM extends Identifiable, COLUMN extends Identifiable>({
       return (
         <div
           className={`
-            transition-all duration-200 ease-out card p-s 
+            transition-all duration-200 ease-out  
             ${!activeItem && "group hover:scale-105 cursor-grab"} 
             ${activeItem?.id === item.id && "cursor-grabbing scale-105"}
           `}
