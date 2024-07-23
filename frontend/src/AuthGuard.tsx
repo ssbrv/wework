@@ -1,17 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useToken } from "./api/auth/authApi";
 import LoadingScreen from "./components/LoadingScreen/LodaingScreen";
-import { useState } from "react";
 
 const AuthGuard = (): JSX.Element => {
   const { token, isLoading } = useToken();
-  const [delayed, setDelayed] = useState<boolean>(true);
 
-  setTimeout(() => {
-    setDelayed(false);
-  }, 1000);
-
-  if (isLoading || delayed) {
+  if (isLoading) {
     return (
       <LoadingScreen>
         <div className="fnt-lg">
