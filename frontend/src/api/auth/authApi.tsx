@@ -18,11 +18,6 @@ class TokenLocalStorageService extends LocalStorageService<string> {
     super(TOKEN_LOCAL_STORAGE_ITEM_NAME);
   }
 
-  setItem(token: string | null): void {
-    super.setItem(token);
-    this.setAuthHeader();
-  }
-
   setAuthHeader(): void {
     const token = this.getItem();
     token
