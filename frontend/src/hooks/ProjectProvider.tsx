@@ -1,11 +1,11 @@
 import { createContext, useContext, useMemo } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import { getFetcher } from "../api/fetchers";
-import { useException } from "./ExceptionProvider";
 import { Outlet, useParams } from "react-router-dom";
 import { Project } from "../domain/Project";
 import { Loader } from "@mantine/core";
 import { Task } from "../domain/Task";
+import { displayError } from "../utils/displayError";
 
 interface ProjectContextProps {
   project: Project | undefined;
@@ -20,7 +20,6 @@ const ProjectContext = createContext<ProjectContextProps | undefined>(
 
 const ProjectProvider = (): JSX.Element => {
   const { projectId } = useParams<{ projectId: string }>();
-  const { handleException } = useException();
 
   const {
     data: project,
@@ -33,7 +32,7 @@ const ProjectProvider = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from projects/projectId"
     );
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const {
@@ -46,7 +45,7 @@ const ProjectProvider = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from projects/projectId/tasks"
     );
-    handleException(errorTasks, undefined, true);
+    displayError(errorTasks, undefined, true);
   }
 
   const contextValue = useMemo(

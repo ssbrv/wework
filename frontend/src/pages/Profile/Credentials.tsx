@@ -8,11 +8,11 @@ import {
 import { useUser } from "../../hooks/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
 import ChangePasswordForm from "./ChangePasswordForm";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import { UpdateUserRequest } from "../../http/request/UpdateUserRequest";
+import { displayError } from "../../utils/displayError";
 
 const Credentials = (): JSX.Element => {
   const [
@@ -26,8 +26,6 @@ const Credentials = (): JSX.Element => {
   ] = useDisclosure(false);
 
   const { user, editUsername, isItMe } = useUser();
-
-  const { handleException } = useException();
 
   const {
     register: key,
@@ -58,7 +56,7 @@ const Credentials = (): JSX.Element => {
           unpressEditUsername();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

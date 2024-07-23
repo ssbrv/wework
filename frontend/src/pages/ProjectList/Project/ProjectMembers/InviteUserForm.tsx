@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { Button, Group, Stepper, TextInput } from "@mantine/core";
@@ -11,6 +10,7 @@ import { getFetcher } from "../../../../api/fetchers";
 import { Role } from "../../../../domain/Role";
 import { List } from "../../../../components/List/List";
 import { useState } from "react";
+import { displayError } from "../../../../utils/displayError";
 
 interface Props {
   onClose: () => void;
@@ -23,7 +23,6 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  const { handleException } = useException();
   const { project } = useProject();
 
   const { data: users } = useSWR<User[]>("users", getFetcher);
@@ -42,7 +41,6 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
     formState: { errors },
     setValue,
     clearErrors,
-    watch,
   } = useForm<InviteRequest>();
 
   const inviteUser = handleSubmit(async (inviteRequest: InviteRequest) => {
@@ -56,7 +54,7 @@ const InviteUserForm = ({ onClose }: Props): JSX.Element => {
         onClose();
       })
       .catch(function (exception) {
-        handleException(exception, setError, true);
+        displayError(exception, setError, true);
       });
   });
 

@@ -16,9 +16,9 @@ import {
 import { KeyedMutator } from "swr";
 import api from "../../api/api";
 import { goodNotification } from "../../components/Notifications/Notifications";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/utils";
+import { displayError } from "../../utils/displayError";
 
 interface Props {
   invitation: Membership;
@@ -26,7 +26,6 @@ interface Props {
 }
 
 export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
-  const { handleException } = useException();
   const navigate = useNavigate();
 
   const reject = async (): Promise<void> => {
@@ -35,7 +34,7 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
       goodNotification("The invitation was rejected successfully!");
       mutate();
     } catch (exception) {
-      handleException(exception, undefined, true);
+      displayError(exception, undefined, true);
     }
   };
 
@@ -45,7 +44,7 @@ export const InvitationCard = ({ invitation, mutate }: Props): JSX.Element => {
       goodNotification("The invitation was accepted successfully!");
       mutate();
     } catch (exception) {
-      handleException(exception, undefined, true);
+      displayError(exception, undefined, true);
     }
   };
 

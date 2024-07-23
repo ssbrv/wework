@@ -1,8 +1,6 @@
 import { Header } from "../../components/Header/Header";
 import { Button, Group, Modal, Tooltip } from "@mantine/core";
 import { ButtonBar } from "../../components/ButtonBar/ButtonBar";
-import { useException } from "../../hooks/ExceptionProvider";
-import { useAuth } from "../../hooks/AuthProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import BasicInformation from "./BasicInformation";
 import Credentials from "./Credentials";
@@ -10,10 +8,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { useUser } from "../../hooks/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { ArrowBackUp } from "tabler-icons-react";
+import { displayError } from "../../utils/displayError";
+import { deleteAccount, fullLogout } from "../../api/auth/authApi";
 
 const ProfilePage = (): JSX.Element => {
-  const { handleException } = useException();
-  const { fullLogout, deleteAccount } = useAuth();
   const { isItMe } = useUser();
   const navigate = useNavigate();
 
@@ -34,7 +32,7 @@ const ProfilePage = (): JSX.Element => {
         );
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
       });
   }
 

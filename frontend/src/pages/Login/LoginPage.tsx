@@ -1,18 +1,14 @@
 import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
-import { useAuth } from "../../hooks/AuthProvider";
 import { AuthRequest } from "../../http/request/AuthRequest";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
+import { login, useMyId } from "../../api/auth/authApi";
+import { displayError } from "../../utils/displayError";
 import { useEffect } from "react";
 
 const LoginPage = (): JSX.Element => {
-  const { login, myId } = useAuth();
-  const { handleException } = useException();
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -20,11 +16,14 @@ const LoginPage = (): JSX.Element => {
     formState: { errors },
   } = useForm<AuthRequest>();
 
+  const { myId } = useMyId();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (myId) {
       navigate(`/users/${myId}/profile`);
     }
-  }, [myId, navigate]);
+  }, [myId]);
 
   const loginUser = handleSubmit(async (authRequest: AuthRequest) => {
     await login(authRequest)
@@ -35,8 +34,7 @@ const LoginPage = (): JSX.Element => {
         );
       })
       .catch(function (exception) {
-        console.log("The exceptoin was caught while trying to log in");
-        handleException(exception, setError);
+        displayError(exception, setError);
       });
   });
 

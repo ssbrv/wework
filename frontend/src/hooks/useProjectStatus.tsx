@@ -1,17 +1,15 @@
 import useSWR from "swr";
 import { Status } from "../domain/Status";
 import { getFetcher } from "../api/fetchers";
-import { useException } from "./ExceptionProvider";
+import { displayError } from "../utils/displayError";
 
 const useProjectStatus = () => {
-  const { handleException } = useException();
-
   const { data, error, isLoading, mutate } = useSWR<Status[]>(
     "statuses/project",
     getFetcher
   );
 
-  if (error) handleException(error, undefined, true);
+  if (error) displayError(error, undefined, true);
 
   if (isLoading || !data)
     return {

@@ -2,15 +2,14 @@ import { Button, Textarea, TextInput } from "@mantine/core";
 import { useProject } from "../../../../hooks/ProjectProvider";
 import { useForm } from "react-hook-form";
 import { CreateUpdateProjectRequest } from "../../../../http/request/CreateUpdateProjectRequest";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import { useEffect, useState } from "react";
 import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { ButtonBar } from "../../../../components/ButtonBar/ButtonBar";
 import { useDisclosure } from "@mantine/hooks";
+import { displayError } from "../../../../utils/displayError";
 
 const ProjectDetails = (): JSX.Element => {
-  const { handleException } = useException();
   const { project, mutate } = useProject();
   const [charCount, setCharCount] = useState(project?.description?.length);
   const [editPressed, { open: pressEdit, close: unpressEdit }] =
@@ -46,7 +45,7 @@ const ProjectDetails = (): JSX.Element => {
           unpressEdit();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

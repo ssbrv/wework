@@ -1,16 +1,15 @@
 import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
-import { useAuth } from "../../hooks/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { RegisterRequest } from "../../http/request/RegisterRequest";
-import { useException } from "../../hooks/ExceptionProvider";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import PreAuthCard from "../../components/PreAuthCard/PreAuthCard";
 import { useEffect } from "react";
+import { displayError } from "../../utils/displayError";
+import { register, useMyId } from "../../api/auth/authApi";
 
 const RegisterPage = (): JSX.Element => {
-  const { register, myId } = useAuth();
-  const { handleException } = useException();
+  const { myId } = useMyId();
   const navigate = useNavigate();
 
   const {
@@ -37,7 +36,7 @@ const RegisterPage = (): JSX.Element => {
           );
         })
         .catch(function (exception) {
-          handleException(exception, setError);
+          displayError(exception, setError);
         });
     }
   );

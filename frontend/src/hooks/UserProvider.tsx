@@ -9,11 +9,11 @@ import {
 import useSWR from "swr";
 import { User } from "../domain/User";
 import { getFetcher } from "../api/fetchers";
-import { useException } from "./ExceptionProvider";
 import api from "../api/api";
 import { Outlet, useParams } from "react-router-dom";
 import { UpdateUserRequest } from "../http/request/UpdateUserRequest";
-import { useAuth } from "./AuthProvider";
+import { displayError } from "../utils/displayError";
+import { useMyId } from "../api/auth/authApi";
 
 interface UserContextProps {
   isItMe: boolean;
@@ -25,10 +25,14 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 const UserProvider = (): JSX.Element => {
-  const { myId } = useAuth();
-  const { userId } = useParams<{ userId: string }>();
+  const { myId } = useMyId();
+  const { userId: userIdAsString } = useParams<{ userId: string }>();
+  const [userId, setUserId] = useState<number | null>();
   const [isItMe, setIsItMe] = useState<boolean>(userId === myId);
-  const { handleException } = useException();
+
+  useEffect(() => {
+    setUserId(userIdAsString ? parseInt(userIdAsString) : null);
+  }, [userIdAsString]);
 
   useEffect(() => {
     setIsItMe(userId === myId);
@@ -38,11 +42,11 @@ const UserProvider = (): JSX.Element => {
     data: user,
     error,
     mutate,
-  } = useSWR<User>(`users/${userId}`, getFetcher);
+  } = useSWR<User>(userId ? `users/${userId}` : null, getFetcher);
 
   if (error) {
     console.log("The exception was caught while fetching data from users/id");
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const editBasic = useCallback(

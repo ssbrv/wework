@@ -3,17 +3,16 @@ import { ButtonBar } from "../../../../components/ButtonBar/ButtonBar";
 import { useProject } from "../../../../hooks/ProjectProvider";
 import { useDisclosure } from "@mantine/hooks";
 import api from "../../../../api/api";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { ChangeStatusRequest } from "../../../../http/request/ChangeTaskStatusRequest";
 import useProjectStatus from "../../../../hooks/useProjectStatus";
+import { displayError } from "../../../../utils/displayError";
 
 const ProjectSettings = (): JSX.Element => {
   const { project, mutate } = useProject();
-  const { handleException } = useException();
   const navigate = useNavigate();
   const { projectStatuses } = useProjectStatus();
 
@@ -54,7 +53,7 @@ const ProjectSettings = (): JSX.Element => {
         navigate("/projects");
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
       });
 
     closeDelete();
@@ -71,7 +70,7 @@ const ProjectSettings = (): JSX.Element => {
         navigate("/projects");
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
       });
 
     closeLeave();
@@ -87,7 +86,7 @@ const ProjectSettings = (): JSX.Element => {
           mutate();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
           closeChangeStatus();
           resetForm();
         });

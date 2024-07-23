@@ -1,16 +1,15 @@
 import { Button, Group } from "@mantine/core";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import { useMembership } from "../../../../hooks/MembershipProvider";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { useNavigate } from "react-router-dom";
 import api from "../../../../api/api";
+import { displayError } from "../../../../utils/displayError";
 
 interface Props {
   onClose: () => void;
 }
 
 const CancelInvitationForm = ({ onClose }: Props): JSX.Element => {
-  const { handleException } = useException();
   const { membership } = useMembership();
   const navigate = useNavigate();
 
@@ -23,7 +22,7 @@ const CancelInvitationForm = ({ onClose }: Props): JSX.Element => {
         navigate("../");
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
         onClose();
       });
   }

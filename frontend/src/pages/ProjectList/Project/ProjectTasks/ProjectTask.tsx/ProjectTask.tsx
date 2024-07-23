@@ -15,7 +15,6 @@ import { CreateUpdateTaskRequest } from "../../../../../http/request/CreateUpdat
 import { useTask } from "../../../../../hooks/TaskProvider";
 import api from "../../../../../api/api";
 import { goodNotification } from "../../../../../components/Notifications/Notifications";
-import { useException } from "../../../../../hooks/ExceptionProvider";
 import { ChangeStatusRequest } from "../../../../../http/request/ChangeTaskStatusRequest";
 import { List } from "../../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
@@ -23,6 +22,7 @@ import { AddAssigneeForm } from "./AddAssigneeForm";
 import { ArrowBackUp, UserMinus } from "tabler-icons-react";
 import { useProject } from "../../../../../hooks/ProjectProvider";
 import useTaskStatus from "../../../../../hooks/useTaskStatus";
+import { displayError } from "../../../../../utils/displayError";
 
 const ProjectTask = (): JSX.Element => {
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ const ProjectTask = (): JSX.Element => {
     addAssigneeOpened,
     { open: openAddAssignee, close: closeAddAssignee },
   ] = useDisclosure(false);
-  const { handleException } = useException();
   const { taskStatuses: statuses } = useTaskStatus();
 
   const {
@@ -79,7 +78,7 @@ const ProjectTask = (): JSX.Element => {
           unpressEdit();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );
@@ -100,7 +99,7 @@ const ProjectTask = (): JSX.Element => {
           mutateTasks();
         })
         .catch(function (exception) {
-          handleException(exception, setStatusError, true);
+          displayError(exception, setStatusError, true);
           statusReset({ statusValue: task?.status.value });
         });
     }
@@ -120,7 +119,7 @@ const ProjectTask = (): JSX.Element => {
         navigate("../");
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
       });
   }
 
@@ -138,7 +137,7 @@ const ProjectTask = (): JSX.Element => {
         mutateTasks();
       })
       .catch(function (exception) {
-        handleException(exception, undefined, true);
+        displayError(exception, undefined, true);
       });
   };
 

@@ -1,18 +1,15 @@
 import { Button, Group, PasswordInput } from "@mantine/core";
-import { useAuth } from "../../hooks/AuthProvider";
-import { useException } from "../../hooks/ExceptionProvider";
 import { ChangePasswordRequest } from "../../http/request/ChangePasswordRequest";
 import { useForm } from "react-hook-form";
 import { goodNotification } from "../../components/Notifications/Notifications";
+import { displayError } from "../../utils/displayError";
+import { changePassword } from "../../api/auth/authApi";
 
 interface Props {
   onClose: () => void;
 }
 
 const ChangePasswordForm = ({ onClose }: Props): JSX.Element => {
-  const { changePassword } = useAuth();
-  const { handleException } = useException();
-
   const {
     register: key,
     handleSubmit,
@@ -31,7 +28,7 @@ const ChangePasswordForm = ({ onClose }: Props): JSX.Element => {
           );
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

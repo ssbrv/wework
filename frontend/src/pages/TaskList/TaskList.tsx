@@ -11,13 +11,13 @@ import { useState } from "react";
 import useSWR from "swr";
 import { Task } from "../../domain/Task";
 import { getFetcher } from "../../api/fetchers";
-import { useException } from "../../hooks/ExceptionProvider";
 import { Project } from "../../domain/Project";
 import { Search } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 import { ArrowsDiagonal } from "tabler-icons-react";
 import useTaskStatus from "../../hooks/useTaskStatus";
 import { Status } from "../../domain/Status";
+import { displayError } from "../../utils/displayError";
 
 interface GroupedByProjectTasks {
   tasks: Task[];
@@ -33,7 +33,6 @@ const TaskList = (): JSX.Element => {
   const navigate = useNavigate();
   const [type, setType] = useState("Authored");
   const [groupping, setGroupping] = useState("project");
-  const { handleException } = useException();
   const [searchTerm, setSearchTerm] = useState("");
   const { taskStatuses: statuses } = useTaskStatus();
 
@@ -42,21 +41,21 @@ const TaskList = (): JSX.Element => {
     getFetcher
   );
 
-  if (errorAuthoredTasks) handleException(errorAuthoredTasks, undefined, true);
+  if (errorAuthoredTasks) displayError(errorAuthoredTasks, undefined, true);
 
   const { data: assignedTasks, error: errorAssignedTasks } = useSWR<Task[]>(
     "tasks/assigned",
     getFetcher
   );
 
-  if (errorAssignedTasks) handleException(errorAssignedTasks, undefined, true);
+  if (errorAssignedTasks) displayError(errorAssignedTasks, undefined, true);
 
   const { data: projects, error: errorProjects } = useSWR<Project[]>(
     "projects",
     getFetcher
   );
 
-  if (errorProjects) handleException(errorProjects, undefined, true);
+  if (errorProjects) displayError(errorProjects, undefined, true);
 
   const tasks = type === "Authored" ? authoredTasks : assignedTasks;
 

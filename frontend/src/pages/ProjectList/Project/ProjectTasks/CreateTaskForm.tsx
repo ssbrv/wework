@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { Button, Group, Textarea, TextInput } from "@mantine/core";
@@ -7,13 +6,13 @@ import { CreateUpdateTaskRequest } from "../../../../http/request/CreateUpdateTa
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useProject } from "../../../../hooks/ProjectProvider";
+import { displayError } from "../../../../utils/displayError";
 
 interface Props {
   onClose: () => void;
 }
 
 const CreateTaskForm = ({ onClose }: Props): JSX.Element => {
-  const { handleException } = useException();
   const navigate = useNavigate();
   const [charCount, setCharCount] = useState(0);
   const { project } = useProject();
@@ -35,7 +34,7 @@ const CreateTaskForm = ({ onClose }: Props): JSX.Element => {
           navigate(`${response.data.id}`);
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

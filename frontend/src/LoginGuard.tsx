@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "./hooks/AuthProvider";
+import { useMyId, useToken } from "./api/auth/authApi";
 
 const LoginGuard = (): JSX.Element => {
-  const { token, myId } = useAuth();
+  const { token } = useToken();
+  const { myId } = useMyId();
 
   return token ? <Navigate to={`/users/${myId}/profile`} /> : <Outlet />;
 };

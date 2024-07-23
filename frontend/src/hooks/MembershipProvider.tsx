@@ -1,10 +1,10 @@
 import { createContext, useContext, useMemo } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import { getFetcher } from "../api/fetchers";
-import { useException } from "./ExceptionProvider";
 import { Outlet, useParams } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { Membership } from "../domain/Membership";
+import { displayError } from "../utils/displayError";
 
 interface MembershipContextProps {
   membership: Membership | undefined;
@@ -17,7 +17,6 @@ const MembershipContext = createContext<MembershipContextProps | undefined>(
 
 const MembershipProvider = (): JSX.Element => {
   const { membershipId } = useParams<{ membershipId: string }>();
-  const { handleException } = useException();
 
   const {
     data: membership,
@@ -30,7 +29,7 @@ const MembershipProvider = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from memberships/membershipId"
     );
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const contextValue = useMemo(

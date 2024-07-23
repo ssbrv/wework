@@ -4,14 +4,13 @@ import { Search } from "tabler-icons-react";
 import { SrcollUpAffix } from "../../components/Affix/ScrollUpAffix";
 import useSWR from "swr";
 import { getFetcher } from "../../api/fetchers";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useState } from "react";
 import { CloseButton } from "@mantine/core";
 import { Membership } from "../../domain/Membership";
 import { InvitationCard } from "./InvitationCard";
+import { displayError } from "../../utils/displayError";
 
 const InvitationList = (): JSX.Element => {
-  const { handleException } = useException();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortTerm, setSortTerm] = useState("newest");
 
@@ -25,7 +24,7 @@ const InvitationList = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from invitations"
     );
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const filteredInvitations = invitations?.filter((invitation) =>

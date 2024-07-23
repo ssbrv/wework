@@ -1,17 +1,16 @@
 import { Button, Group, Textarea, TextInput } from "@mantine/core";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
 import { goodNotification } from "../../components/Notifications/Notifications";
 import { CreateUpdateProjectRequest } from "../../http/request/CreateUpdateProjectRequest";
 import api from "../../api/api";
 import { useState } from "react";
+import { displayError } from "../../utils/displayError";
 
 interface Props {
   onClose: () => void;
 }
 
 const CreateProjectForm = ({ onClose }: Props): JSX.Element => {
-  const { handleException } = useException();
   const [charCount, setCharCount] = useState(0);
 
   const {
@@ -30,7 +29,7 @@ const CreateProjectForm = ({ onClose }: Props): JSX.Element => {
           onClose();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

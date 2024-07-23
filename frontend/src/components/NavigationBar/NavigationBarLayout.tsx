@@ -9,9 +9,9 @@ import {
 } from "tabler-icons-react";
 import { useState } from "react";
 import { NavigationBarItem } from "./NavigationBarItem";
-import { useAuth } from "../../hooks/AuthProvider";
 import { WeWorkLogo } from "../WeWorkLogo/WeWorkLogo";
 import { goodNotification } from "../Notifications/Notifications";
+import { logout, useMyId } from "../../api/auth/authApi";
 
 interface NavigationOption {
   icon: React.ReactNode;
@@ -20,7 +20,7 @@ interface NavigationOption {
 }
 
 const NavigationBarLayout = (): JSX.Element => {
-  const { logout, myId } = useAuth();
+  const { myId } = useMyId();
   const [navigationBarRolled, setNavigationBarRolled] = useState(false);
 
   function rollNavigationBar(): void {

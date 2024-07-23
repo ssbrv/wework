@@ -1,10 +1,10 @@
 import { createContext, useContext, useMemo } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import { getFetcher } from "../api/fetchers";
-import { useException } from "./ExceptionProvider";
 import { Outlet, useParams } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { Task } from "../domain/Task";
+import { displayError } from "../utils/displayError";
 
 interface TaskContextProps {
   task: Task | undefined;
@@ -15,7 +15,6 @@ const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 
 const TaskProvider = (): JSX.Element => {
   const { taskId } = useParams<{ taskId: string }>();
-  const { handleException } = useException();
 
   const {
     data: task,
@@ -28,7 +27,7 @@ const TaskProvider = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from tasks/taskId"
     );
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const contextValue = useMemo(() => ({ task, mutate }), [mutate, task]);

@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { useException } from "../../../../../hooks/ExceptionProvider";
 import { Membership } from "../../../../../domain/Membership";
 import { useProject } from "../../../../../hooks/ProjectProvider";
 import { getFetcher } from "../../../../../api/fetchers";
@@ -10,13 +9,13 @@ import api from "../../../../../api/api";
 import { useTask } from "../../../../../hooks/TaskProvider";
 import { goodNotification } from "../../../../../components/Notifications/Notifications";
 import { useEffect } from "react";
+import { displayError } from "../../../../../utils/displayError";
 
 interface Props {
   onClose: () => void;
 }
 
 export const AddAssigneeForm = ({ onClose }: Props): JSX.Element => {
-  const { handleException } = useException();
   const { project } = useProject();
   const { task } = useTask();
 
@@ -25,7 +24,7 @@ export const AddAssigneeForm = ({ onClose }: Props): JSX.Element => {
     getFetcher
   );
 
-  if (error) handleException(error, undefined, true);
+  if (error) displayError(error, undefined, true);
 
   const { setValue, reset, handleSubmit } = useForm<UpdateAssigneeRequest>();
 
@@ -52,7 +51,7 @@ export const AddAssigneeForm = ({ onClose }: Props): JSX.Element => {
           onClose();
         })
         .catch(function (exception) {
-          handleException(exception, undefined, true);
+          displayError(exception, undefined, true);
         });
     }
   );

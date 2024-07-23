@@ -2,7 +2,6 @@ import useSWR from "swr";
 import { useProject } from "../../../../hooks/ProjectProvider";
 import { Membership } from "../../../../domain/Membership";
 import { getFetcher } from "../../../../api/fetchers";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import { List } from "../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../components/Affix/ScrollUpAffix";
 import { Button, Modal, Tooltip } from "@mantine/core";
@@ -10,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import InviteUserForm from "./InviteUserForm";
 import { Users } from "tabler-icons-react";
+import { displayError } from "../../../../utils/displayError";
 
 const ProjectMembers = (): JSX.Element => {
-  const { handleException } = useException();
   const { project } = useProject();
   const navigate = useNavigate();
   const [inviteUserOpened, { open: openInviteUser, close: closeInviteUser }] =
@@ -27,7 +26,7 @@ const ProjectMembers = (): JSX.Element => {
     console.log(
       "The exception was caught while fetching data from projects/projectId/memberships"
     );
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const transformedMemberships = memberships?.map((membership) => ({

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useException } from "../../../../hooks/ExceptionProvider";
 import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { Button, Group, Stepper, TextInput } from "@mantine/core";
@@ -10,6 +9,7 @@ import { List } from "../../../../components/List/List";
 import { useState } from "react";
 import { ChangeRoleRequest } from "../../../../http/request/ChangeRoleRequest";
 import { useMembership } from "../../../../hooks/MembershipProvider";
+import { displayError } from "../../../../utils/displayError";
 
 interface Props {
   onClose: () => void;
@@ -22,8 +22,6 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  const { handleException } = useException();
-
   const { data: roles } = useSWR<Role[]>("member-roles", getFetcher);
   const { membership } = useMembership();
 
@@ -34,7 +32,6 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
     formState: { errors },
     setValue,
     clearErrors,
-    watch,
   } = useForm<ChangeRoleRequest>();
 
   const changeRole = handleSubmit(
@@ -46,7 +43,7 @@ const ChangeRoleForm = ({ onClose }: Props): JSX.Element => {
           onClose();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

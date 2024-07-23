@@ -1,19 +1,17 @@
 import { Button, LoadingOverlay, NativeSelect, TextInput } from "@mantine/core";
 import { useUser } from "../../hooks/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useForm } from "react-hook-form";
 import { UpdateUserRequest } from "../../http/request/UpdateUserRequest";
 import { useEffect } from "react";
 import { goodNotification } from "../../components/Notifications/Notifications";
+import { displayError } from "../../utils/displayError";
 
 const BasicInformation = (): JSX.Element => {
   const { user, editBasic } = useUser();
 
   const [editPressed, { open: pressEdit, close: unpressEdit }] =
     useDisclosure(false);
-
-  const { handleException } = useException();
 
   const {
     register: key,
@@ -35,7 +33,7 @@ const BasicInformation = (): JSX.Element => {
           unpressEdit();
         })
         .catch(function (exception) {
-          handleException(exception, setError, true);
+          displayError(exception, setError, true);
         });
     }
   );

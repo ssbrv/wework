@@ -6,14 +6,13 @@ import { SrcollUpAffix } from "../../components/Affix/ScrollUpAffix";
 import useSWR from "swr";
 import { Project } from "../../domain/Project";
 import { getFetcher } from "../../api/fetchers";
-import { useException } from "../../hooks/ExceptionProvider";
 import { useDisclosure } from "@mantine/hooks";
 import CreateProjectForm from "./CreateProjectForm";
 import { useState } from "react";
 import { CloseButton } from "@mantine/core";
+import { displayError } from "../../utils/displayError";
 
 const ProjectList = (): JSX.Element => {
-  const { handleException } = useException();
   const [newProjectOpened, { open: openNewProject, close: closeNewProject }] =
     useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +25,7 @@ const ProjectList = (): JSX.Element => {
 
   if (error) {
     console.log("The exception was caught while fetching data from projects");
-    handleException(error, undefined, true);
+    displayError(error, undefined, true);
   }
 
   const filteredProjects = projects?.filter((project) =>

@@ -4,15 +4,14 @@ import useTaskStatus from "../../../../../hooks/useTaskStatus";
 import { Task } from "../../../../../domain/Task";
 import { Status } from "../../../../../domain/Status";
 import api from "../../../../../api/api";
-import { useException } from "../../../../../hooks/ExceptionProvider";
 import { useEffect, useState } from "react";
 import { ArrowsDiagonal, Plus, Trash } from "tabler-icons-react";
 import { Button } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import KanbanBoard from "../../../../../components/KanbanBoard/KanbanBoard";
+import { displayError } from "../../../../../utils/displayError";
 
 const ProjectTasksBoardView = (): JSX.Element => {
-  const { handleException } = useException();
   const { tasks, mutateTasks } = useProject();
   const { taskStatuses } = useTaskStatus();
   const [localTasks, setLocalTasks] = useState<Task[]>(tasks || []);
@@ -32,7 +31,7 @@ const ProjectTasksBoardView = (): JSX.Element => {
       });
       mutateTasks();
     } catch (exception) {
-      handleException(exception, undefined, true);
+      displayError(exception, undefined, true);
       mutateTasks();
     }
   };

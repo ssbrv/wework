@@ -1,15 +1,28 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useAuth } from "./hooks/AuthProvider";
-import { okNotification } from "./components/Notifications/Notifications";
+import { useToken } from "./api/auth/authApi";
+import LoadingScreen from "./components/LoadingScreen/LodaingScreen";
+import { useState } from "react";
 
 const AuthGuard = (): JSX.Element => {
-  const { token } = useAuth();
+  const { token, isLoading } = useToken();
+  const [delayed, setDelayed] = useState<boolean>(true);
 
-  if (token) return <Outlet />;
+  setTimeout(() => {
+    setDelayed(false);
+  }, 1000);
 
-  okNotification("Please, sign in!", "Transferring you to the login page...");
+  if (isLoading || delayed) {
+    return (
+      <LoadingScreen>
+        <div className="fnt-lg">
+          <span className="font-bold italic">We are working</span> on your
+          identity
+        </div>
+      </LoadingScreen>
+    );
+  }
 
-  return <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default AuthGuard;
