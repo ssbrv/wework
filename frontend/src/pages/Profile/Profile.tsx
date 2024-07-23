@@ -5,7 +5,7 @@ import { goodNotification } from "../../components/Notifications/Notifications";
 import BasicInformation from "./BasicInformation";
 import Credentials from "./Credentials";
 import { useDisclosure } from "@mantine/hooks";
-import { useUser } from "../../hooks/UserProvider";
+import { useUser } from "../../providers/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { ArrowBackUp } from "tabler-icons-react";
 import { displayError } from "../../utils/displayError";

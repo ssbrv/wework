@@ -1,6 +1,6 @@
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useProject } from "../../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../../providers/ProjectProvider";
 import { List } from "../../../../../components/List/List";
 import { useEffect, useState } from "react";
 import { Select } from "@mantine/core";

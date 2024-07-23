@@ -5,7 +5,7 @@ import { Button, Group, Textarea, TextInput } from "@mantine/core";
 import { CreateUpdateTaskRequest } from "../../../../http/request/CreateUpdateTaskRequest";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 import { displayError } from "../../../../utils/displayError";
 
 interface Props {

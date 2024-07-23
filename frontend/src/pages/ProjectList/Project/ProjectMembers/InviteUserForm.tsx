@@ -3,7 +3,7 @@ import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { Button, Group, Stepper, TextInput } from "@mantine/core";
 import { InviteRequest } from "../../../../http/request/InviteRequest";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 import useSWR from "swr";
 import { User } from "../../../../domain/User";
 import { getFetcher } from "../../../../api/fetchers";

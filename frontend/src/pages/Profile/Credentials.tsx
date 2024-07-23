@@ -5,7 +5,7 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core";
-import { useUser } from "../../hooks/UserProvider";
+import { useUser } from "../../providers/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useForm } from "react-hook-form";

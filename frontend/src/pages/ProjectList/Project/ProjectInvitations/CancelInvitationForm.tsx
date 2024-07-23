@@ -1,5 +1,5 @@
 import { Button, Group } from "@mantine/core";
-import { useMembership } from "../../../../hooks/MembershipProvider";
+import { useMembership } from "../../../../providers/MembershipProvider";
 import { goodNotification } from "../../../../components/Notifications/Notifications";
 import { useNavigate } from "react-router-dom";
 import api from "../../../../api/api";

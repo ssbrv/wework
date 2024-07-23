@@ -1,4 +1,4 @@
-import { useProject } from "../../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../../providers/ProjectProvider";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import useTaskStatus from "../../../../../hooks/useTaskStatus";
 import { Task } from "../../../../../domain/Task";

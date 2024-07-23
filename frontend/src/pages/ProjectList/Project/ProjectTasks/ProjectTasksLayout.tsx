@@ -5,7 +5,7 @@ import CreateTaskForm from "./CreateTaskForm";
 import { TabsBar, TabsBarTab } from "../../../../components/TabsBar/TabsBar";
 import { Header } from "../../../../components/Header/Header";
 import { Outlet } from "react-router-dom";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 
 const tabs: TabsBarTab[] = [
   {

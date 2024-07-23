@@ -8,7 +8,7 @@ import { Role } from "../../../../domain/Role";
 import { List } from "../../../../components/List/List";
 import { useState } from "react";
 import { ChangeRoleRequest } from "../../../../http/request/ChangeRoleRequest";
-import { useMembership } from "../../../../hooks/MembershipProvider";
+import { useMembership } from "../../../../providers/MembershipProvider";
 import { displayError } from "../../../../utils/displayError";
 
 interface Props {

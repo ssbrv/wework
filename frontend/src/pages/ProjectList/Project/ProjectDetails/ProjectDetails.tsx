@@ -1,5 +1,5 @@
 import { Button, Textarea, TextInput } from "@mantine/core";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 import { useForm } from "react-hook-form";
 import { CreateUpdateProjectRequest } from "../../../../http/request/CreateUpdateProjectRequest";
 import { useEffect, useState } from "react";

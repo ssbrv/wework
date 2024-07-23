@@ -12,7 +12,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { CreateUpdateTaskRequest } from "../../../../../http/request/CreateUpdateTaskRequest";
-import { useTask } from "../../../../../hooks/TaskProvider";
+import { useTask } from "../../../../../providers/TaskProvider";
 import api from "../../../../../api/api";
 import { goodNotification } from "../../../../../components/Notifications/Notifications";
 import { ChangeStatusRequest } from "../../../../../http/request/ChangeTaskStatusRequest";
@@ -20,7 +20,7 @@ import { List } from "../../../../../components/List/List";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
 import { AddAssigneeForm } from "./AddAssigneeForm";
 import { ArrowBackUp, UserMinus } from "tabler-icons-react";
-import { useProject } from "../../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../../providers/ProjectProvider";
 import useTaskStatus from "../../../../../hooks/useTaskStatus";
 import { displayError } from "../../../../../utils/displayError";
 

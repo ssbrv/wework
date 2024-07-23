@@ -1,6 +1,6 @@
 import { Button, Group, Modal, Select } from "@mantine/core";
 import { ButtonBar } from "../../../../components/ButtonBar/ButtonBar";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 import { useDisclosure } from "@mantine/hooks";
 import api from "../../../../api/api";
 import { goodNotification } from "../../../../components/Notifications/Notifications";

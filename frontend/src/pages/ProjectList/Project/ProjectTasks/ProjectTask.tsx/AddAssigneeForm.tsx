@@ -1,12 +1,12 @@
 import useSWR from "swr";
 import { Membership } from "../../../../../domain/Membership";
-import { useProject } from "../../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../../providers/ProjectProvider";
 import { getFetcher } from "../../../../../api/fetchers";
 import { List } from "../../../../../components/List/List";
 import { useForm } from "react-hook-form";
 import { UpdateAssigneeRequest } from "../../../../../http/request/UpdateAssigneeRequest";
 import api from "../../../../../api/api";
-import { useTask } from "../../../../../hooks/TaskProvider";
+import { useTask } from "../../../../../providers/TaskProvider";
 import { goodNotification } from "../../../../../components/Notifications/Notifications";
 import { useEffect } from "react";
 import { displayError } from "../../../../../utils/displayError";

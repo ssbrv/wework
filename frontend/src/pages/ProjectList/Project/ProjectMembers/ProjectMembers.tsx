@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useProject } from "../../../../hooks/ProjectProvider";
+import { useProject } from "../../../../providers/ProjectProvider";
 import { Membership } from "../../../../domain/Membership";
 import { getFetcher } from "../../../../api/fetchers";
 import { List } from "../../../../components/List/List";

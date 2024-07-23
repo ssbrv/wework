@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Header } from "../../../components/Header/Header";
-import { useProject } from "../../../hooks/ProjectProvider";
+import { useProject } from "../../../providers/ProjectProvider";
 import { CloseButton, Tooltip } from "@mantine/core";
 import { TabsBar, TabsBarTab } from "../../../components/TabsBar/TabsBar";
 import { Album, Checkbox, Settings, UserPlus, Users } from "tabler-icons-react";

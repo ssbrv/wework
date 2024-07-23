@@ -1,6 +1,6 @@
 import { Button, CloseButton, Modal, TextInput, Tooltip } from "@mantine/core";
 import { Header } from "../../../../components/Header/Header";
-import { useMembership } from "../../../../hooks/MembershipProvider";
+import { useMembership } from "../../../../providers/MembershipProvider";
 import { ButtonBar } from "../../../../components/ButtonBar/ButtonBar";
 import { useNavigate } from "react-router-dom";
 import { DateInput } from "@mantine/dates";

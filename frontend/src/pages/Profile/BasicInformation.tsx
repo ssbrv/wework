@@ -1,5 +1,5 @@
 import { Button, LoadingOverlay, NativeSelect, TextInput } from "@mantine/core";
-import { useUser } from "../../hooks/UserProvider";
+import { useUser } from "../../providers/UserProvider";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { UpdateUserRequest } from "../../http/request/UpdateUserRequest";
