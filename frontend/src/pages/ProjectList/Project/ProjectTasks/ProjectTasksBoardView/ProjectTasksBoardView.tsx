@@ -1,6 +1,5 @@
 import { useProject } from "../../../../../providers/ProjectProvider";
 import { SrcollUpAffix } from "../../../../../components/Affix/ScrollUpAffix";
-import useTaskStatus from "../../../../../hooks/useTaskStatus";
 import { Task } from "../../../../../domain/Task";
 import { Status } from "../../../../../domain/Status";
 import api from "../../../../../api/api";
@@ -10,10 +9,11 @@ import { Button } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import KanbanBoard from "../../../../../components/KanbanBoard/KanbanBoard";
 import { displayError } from "../../../../../utils/displayError";
+import { useTaskStatuses } from "../../../../../hooks/fetch/statuses";
 
 const ProjectTasksBoardView = (): JSX.Element => {
   const { tasks, mutateTasks } = useProject();
-  const { taskStatuses } = useTaskStatus();
+  const { taskStatuses } = useTaskStatuses();
   const [localTasks, setLocalTasks] = useState<Task[]>(tasks || []);
   const navigate = useNavigate();
 
